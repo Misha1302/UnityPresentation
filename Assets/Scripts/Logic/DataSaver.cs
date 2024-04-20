@@ -17,16 +17,16 @@
 
         public static DataManager Load()
         {
-            Debug.Log(_path);
+            // Debug.Log(_path);
 
             if (!File.Exists(_path))
-                return DataManager.NewEmpty();
+                return DataManager.NewDefault();
 
 
             var json = File.ReadAllText(_path);
 
             return string.IsNullOrWhiteSpace(json)
-                ? DataManager.NewEmpty()
+                ? DataManager.NewDefault()
                 : JsonUtility.FromJson<DataManagerDto>(json).FromDto();
         }
     }

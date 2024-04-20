@@ -2,6 +2,6 @@
 {
     public static class PathUrlExtensions
     {
-        public static string PathToUrl(this string path) => $"file:///{path}";
+        public static string ToUrl(this string path) => $"file:///{path}";
     }
 }

@@ -1,10 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.Events;
-
-namespace Logic
+﻿namespace Logic
 {
-    public class EventList<T> : IReadOnlyList<T>
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using UnityEngine.Events;
+
+    public class EventList<T> : IReadOnlyList<T> where T : new()
     {
         public readonly UnityEvent<int> OnUpdate = new();
 
@@ -34,6 +36,9 @@ namespace Logic
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public int Count => _list.Count;
+
+
+        public T First(Func<T, bool> predicate) => this.FirstOrDefault(predicate) ?? new T();
 
         public void Add(T value)
         {

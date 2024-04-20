@@ -13,5 +13,9 @@
             this.key = key;
             this.value = value;
         }
+
+        public Pair()
+        {
+        }
     }
 }
