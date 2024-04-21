@@ -1,6 +1,8 @@
 namespace View
 {
+    using Extensions;
     using Logic;
+    using Logic.SaveSystem;
     using TMPro;
     using UnityEngine;
 
@@ -22,7 +24,7 @@ namespace View
 
         private static bool IsValidDataString(string dataString, out DataManagerDto dto)
         {
-            dto = JsonUtility.FromJson<DataManagerDto>(dataString);
+            dto = JsonUtility.FromJson<DataManagerDto>(dataString.ToJsonString());
 
             return dto.audio is not null && dto.texts is not null && dto.videos is not null;
         }

@@ -1,7 +1,7 @@
-﻿using System.Linq;
-
-namespace Logic
+﻿namespace Logic.SaveSystem
 {
+    using System.Linq;
+
     public static class DtoExtensions
     {
         public static DataManagerDto ToDto(this DataManager dataManager) =>

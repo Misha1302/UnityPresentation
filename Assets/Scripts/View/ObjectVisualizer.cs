@@ -1,17 +1,18 @@
 namespace View
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using Logic;
+    using Extensions;
+    using Logic.SaveSystem;
+    using Shared;
     using TMPro;
     using UnityEditor;
     using UnityEngine;
     using UnityEngine.UI;
-    using UnityEngine.Video;
 
     public class ObjectVisualizer : MonoBehaviour, IDontDestroyMe
     {
+#if UNITY_EDITOR
         [SerializeField] private ObjectType visualizeType;
         [SerializeField] private string key;
 
@@ -32,7 +33,7 @@ namespace View
                     return;
 
                 var components = GetComponents<Component>()
-                    .Where(x => x is not RectTransform and not Transform and not IDontDestroyMe)
+                    .Where(x => x is not null && x is not RectTransform and not Transform and not IDontDestroyMe)
                     .ToArray();
 
                 for (var index = 0; components.Any(x => x != null); index++)
@@ -55,25 +56,24 @@ namespace View
 
         private void SetVideo()
         {
-            var player = GetOrAddComponent<VideoPlayer>();
+            var player = GetOrAddComponent<RVideoPlayer>();
             var image = GetOrAddComponent<RawImage>();
-            var renderTexture = new RenderTexture(Screen.width, Screen.height, 16);
+            var renderTexture = new RenderTexture(Screen.currentResolution.width, Screen.currentResolution.height, 16);
 
-            player.url = Data.Videos.First(_findX).value.ToUrl();
+            player.Init(Data.Videos.FindOrDefaultInstance(_findX).value.ToUrl(), renderTexture);
 
-            player.targetTexture = renderTexture;
             image.texture = renderTexture;
         }
 
         private void SetText()
         {
-            GetOrAddComponent<TextMeshProUGUI>().text = Data.Texts.First(_findX).value;
+            GetOrAddComponent<TextMeshProUGUI>().text = Data.Texts.FindOrDefaultInstance(_findX).value;
         }
 
         private void SetAudio()
         {
             StartCoroutine(DataLoader.LoadAudio(
-                Data.Audio.First(_findX).value.ToUrl(),
+                Data.Audio.FindOrDefaultInstance(_findX).value.ToUrl(),
                 clip => GetOrAddComponent<AudioSource>().clip = clip
             ));
         }
@@ -81,7 +81,7 @@ namespace View
         private void SetImage()
         {
             StartCoroutine(DataLoader.LoadImage(
-                Data.Images.First(_findX).value.ToUrl(),
+                Data.Images.FindOrDefaultInstance(_findX).value.ToUrl(),
                 sprite => GetOrAddComponent<Image>().sprite = sprite
             ));
         }
@@ -95,12 +95,6 @@ namespace View
             return audioSource;
         }
 
-        [DoesNotReturn]
-        private static void ArgumentOutOfRange()
-        {
-            throw new ArgumentOutOfRangeException();
-        }
-
 
         private void ActObjType(Action textAct, Action audioAct, Action imageAct, Action videoAct)
         {
@@ -111,10 +105,11 @@ namespace View
                 ObjectType.Image => imageAct,
                 ObjectType.Video => videoAct,
                 ObjectType.Text => textAct,
-                _ => ArgumentOutOfRange
+                _ => () => Thrower.ArgumentOutOfRange($"Unknown object type: {visualizeType}")
             };
 
             act?.Invoke();
         }
+#endif
     }
 }

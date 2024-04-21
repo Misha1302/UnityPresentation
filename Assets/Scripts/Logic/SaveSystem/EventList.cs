@@ -1,4 +1,4 @@
-﻿namespace Logic
+﻿namespace Logic.SaveSystem
 {
     using System;
     using System.Collections;
@@ -38,7 +38,7 @@
         public int Count => _list.Count;
 
 
-        public T First(Func<T, bool> predicate) => this.FirstOrDefault(predicate) ?? new T();
+        public T FindOrDefaultInstance(Func<T, bool> predicate) => this.FirstOrDefault(predicate) ?? new T();
 
         public void Add(T value)
         {

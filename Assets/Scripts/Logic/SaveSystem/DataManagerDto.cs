@@ -1,4 +1,4 @@
-﻿namespace Logic
+﻿namespace Logic.SaveSystem
 {
     using System;
 

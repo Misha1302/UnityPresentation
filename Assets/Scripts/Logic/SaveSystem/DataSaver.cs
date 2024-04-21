@@ -1,12 +1,12 @@
-﻿namespace Logic
+﻿namespace Logic.SaveSystem
 {
     using System.IO;
     using UnityEngine;
 
     public static class DataSaver
     {
-        private const string Key = "game_data.json";
-        private static readonly string _path = Path.Combine(Application.persistentDataPath, Key);
+        private const string FileName = "game_data.json";
+        private static readonly string _path = Path.Combine(Application.persistentDataPath, FileName);
 
         public static void Save(DataManager dataManager)
         {
@@ -17,11 +17,8 @@
 
         public static DataManager Load()
         {
-            // Debug.Log(_path);
-
             if (!File.Exists(_path))
                 return DataManager.NewDefault();
-
 
             var json = File.ReadAllText(_path);
 
