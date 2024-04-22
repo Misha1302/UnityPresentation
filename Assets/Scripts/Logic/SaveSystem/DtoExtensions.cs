@@ -10,10 +10,10 @@
                 audio = new EventListDto<Pair<string, string>> { list = dataManager.Audio.ToList() },
                 videos = new EventListDto<Pair<string, string>> { list = dataManager.Videos.ToList() },
                 texts = new EventListDto<Pair<string, string>> { list = dataManager.Texts.ToList() },
-                images = new EventListDto<Pair<string, string>> { list = dataManager.Images.ToList() },
+                images = new EventListDto<Pair<string, string>> { list = dataManager.Images.ToList() }
             };
 
-        
+
         public static DataManager FromDto(this DataManagerDto dto) =>
             new(
                 new EventList<Pair<string, string>>(dto.audio.list),

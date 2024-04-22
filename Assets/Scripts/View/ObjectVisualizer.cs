@@ -12,46 +12,22 @@ namespace View
 
     public class ObjectVisualizer : MonoBehaviour, IDontDestroyMe
     {
-#if UNITY_EDITOR
         [SerializeField] private ObjectType visualizeType;
         [SerializeField] private string key;
 
-        private readonly Func<Pair<string, string>, bool> _findX;
-
-        public ObjectVisualizer()
+        private void Start()
         {
-            _findX = x => x.key == key;
+            ActObjType(SetText, SetAudio, SetImage, SetVideo);
         }
 
-        private static DataManager Data => DataManager.Instance;
 
-        private void OnValidate()
+        private T GetOrAddComponent<T>() where T : Component
         {
-            EditorApplication.delayCall += () =>
-            {
-                if (Application.isPlaying)
-                    return;
+            var audioSource = gameObject.GetComponent<T>();
+            if (audioSource == null)
+                audioSource = gameObject.AddComponent<T>();
 
-                var components = GetComponents<Component>()
-                    .Where(x => x is not null && x is not RectTransform and not Transform and not IDontDestroyMe)
-                    .ToArray();
-
-                for (var index = 0; components.Any(x => x != null); index++)
-                {
-                    index %= components.Length;
-
-                    var component = components[index];
-                    if (component != null && gameObject.CanDestroy(component.GetType()))
-                        DestroyImmediate(component);
-                }
-
-                ActObjType(
-                    SetText,
-                    SetAudio,
-                    SetImage,
-                    SetVideo
-                );
-            };
+            return audioSource;
         }
 
         private void SetVideo()
@@ -72,27 +48,31 @@ namespace View
 
         private void SetAudio()
         {
-            StartCoroutine(DataLoader.LoadAudio(
+            ResourceLoader.LoadAudio(
                 Data.Audio.FindOrDefaultInstance(_findX).value.ToUrl(),
                 clip => GetOrAddComponent<AudioSource>().clip = clip
-            ));
+            );
         }
 
         private void SetImage()
         {
-            StartCoroutine(DataLoader.LoadImage(
-                Data.Images.FindOrDefaultInstance(_findX).value.ToUrl(),
-                sprite => GetOrAddComponent<Image>().sprite = sprite
-            ));
-        }
+            ResourceLoader.LoadImage(Data.Images.FindOrDefaultInstance(_findX).value.ToUrl(), SetSprite);
+            return;
 
-        private T GetOrAddComponent<T>() where T : Component
-        {
-            var audioSource = gameObject.GetComponent<T>();
-            if (audioSource == null)
-                audioSource = gameObject.AddComponent<T>();
+            void SetSprite(Sprite sprite)
+            {
+                var img = GetOrAddComponent<Image>();
+                img.sprite = sprite;
+                ScaleAsNativeRatio();
+                return;
 
-            return audioSource;
+                void ScaleAsNativeRatio()
+                {
+                    var w = img.rectTransform.rect.width;
+                    var h = w * (sprite.rect.height / sprite.rect.width);
+                    img.rectTransform.sizeDelta = new Vector2(w, h);
+                }
+            }
         }
 
 
@@ -109,6 +89,40 @@ namespace View
             };
 
             act?.Invoke();
+        }
+
+#if UNITY_EDITOR
+        private readonly Func<Pair<string, string>, bool> _findX;
+
+        public ObjectVisualizer()
+        {
+            _findX = x => x.key == key;
+        }
+
+        private static DataManager Data => DataManager.Instance;
+
+        private void OnValidate()
+        {
+            EditorApplication.delayCall += () =>
+            {
+                if (Application.isPlaying)
+                    return;
+
+                var components = GetComponents<Component>()
+                    .Where(x => x != null && x is not RectTransform and not Transform and not IDontDestroyMe)
+                    .ToArray();
+
+                for (var index = 0; components.Any(x => x != null); index++)
+                {
+                    index %= components.Length;
+
+                    var component = components[index];
+                    if (component != null && gameObject.CanDestroy(component.GetType()))
+                        DestroyImmediate(component);
+                }
+
+                ActObjType(SetText, SetAudio, SetImage, SetVideo);
+            };
         }
 #endif
     }

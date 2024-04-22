@@ -1,7 +1,6 @@
 namespace View
 {
     using Extensions;
-    using Logic;
     using Logic.SaveSystem;
     using TMPro;
     using UnityEngine;
@@ -12,7 +11,7 @@ namespace View
 
         private void Start()
         {
-            inputField.text = JsonUtility.ToJson(DataManager.Instance.ToDto(), true);
+            inputField.text = JsonUtility.ToJson(DataManager.Instance.ToDto(), true).FromJsonString();
             inputField.onEndEdit.AddListener(SaveChanges);
         }
 

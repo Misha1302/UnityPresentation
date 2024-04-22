@@ -2,7 +2,6 @@ namespace View
 {
     using System.Linq;
     using Extensions;
-    using Logic;
     using Logic.SaveSystem;
     using UnityEngine;
     using UnityEngine.Video;
