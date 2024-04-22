@@ -1,8 +1,8 @@
 namespace View
 {
     using System.Linq;
-    using Extensions;
     using Logic.SaveSystem;
+    using Shared.Extensions;
     using UnityEngine;
     using UnityEngine.Video;
 
@@ -20,7 +20,7 @@ namespace View
                     new Pair<string, string>(videoKey, @"C:\Users\Modern 14\Downloads\video_2024-03-24_11-09-13.mp4")
                 );
 
-            videoPlayer.url = DataManager.Instance.Videos.FindOrDefaultInstance(x => x.key == videoKey).value.ToUrl();
+            videoPlayer.url = DataManager.Instance.Videos.FindOrDefaultInstance(x => x.key == videoKey).value.PathToUrl();
 
             videoPlayer.Play();
         }

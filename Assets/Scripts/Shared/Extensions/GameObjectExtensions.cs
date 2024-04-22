@@ -1,4 +1,4 @@
-﻿namespace Extensions
+﻿namespace Shared.Extensions
 {
     using System;
     using System.Linq;

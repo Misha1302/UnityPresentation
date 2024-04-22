@@ -1,7 +1,7 @@
 namespace View
 {
-    using Extensions;
     using Logic.SaveSystem;
+    using Shared.Extensions;
     using TMPro;
     using UnityEngine;
 

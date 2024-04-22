@@ -2,20 +2,20 @@ namespace View
 {
     using System;
     using System.Linq;
-    using Extensions;
     using Logic.SaveSystem;
     using Shared;
+    using Shared.Extensions;
     using TMPro;
     using UnityEditor;
     using UnityEngine;
     using UnityEngine.UI;
 
-    public class ObjectVisualizer : MonoBehaviour, IDontDestroyMe
+    public class ObjectVisualizer : MonoBehaviour, ISlideInitable
     {
         [SerializeField] private ObjectType visualizeType;
         [SerializeField] private string key;
 
-        private void Start()
+        public void Init()
         {
             ActObjType(SetText, SetAudio, SetImage, SetVideo);
         }
@@ -36,7 +36,7 @@ namespace View
             var image = GetOrAddComponent<RawImage>();
             var renderTexture = new RenderTexture(Screen.currentResolution.width, Screen.currentResolution.height, 16);
 
-            player.Init(Data.Videos.FindOrDefaultInstance(_findX).value.ToUrl(), renderTexture);
+            player.Init(Data.Videos.FindOrDefaultInstance(_findX).value.PathToUrl(), renderTexture);
 
             image.texture = renderTexture;
         }
@@ -49,14 +49,14 @@ namespace View
         private void SetAudio()
         {
             ResourceLoader.LoadAudio(
-                Data.Audio.FindOrDefaultInstance(_findX).value.ToUrl(),
+                Data.Audio.FindOrDefaultInstance(_findX).value.PathToUrl(),
                 clip => GetOrAddComponent<AudioSource>().clip = clip
             );
         }
 
         private void SetImage()
         {
-            ResourceLoader.LoadImage(Data.Images.FindOrDefaultInstance(_findX).value.ToUrl(), SetSprite);
+            ResourceLoader.LoadImage(Data.Images.FindOrDefaultInstance(_findX).value.PathToUrl(), SetSprite);
             return;
 
             void SetSprite(Sprite sprite)
@@ -109,7 +109,7 @@ namespace View
                     return;
 
                 var components = GetComponents<Component>()
-                    .Where(x => x != null && x is not RectTransform and not Transform and not IDontDestroyMe)
+                    .Where(x => x != null && x is not RectTransform and not Transform and not ISlideObjectComponent)
                     .ToArray();
 
                 for (var index = 0; components.Any(x => x != null); index++)
