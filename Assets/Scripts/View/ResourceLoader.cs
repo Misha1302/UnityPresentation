@@ -11,7 +11,7 @@
         {
             CoroutinesHelper.Start(
                 IfSuccess(
-                    UnityWebRequestMultimedia.GetAudioClip(path, AudioType.WAV),
+                    UnityWebRequestMultimedia.GetAudioClip(path, AudioType.MPEG),
                     www => callback(DownloadHandlerAudioClip.GetContent(www))
                 )
             );
