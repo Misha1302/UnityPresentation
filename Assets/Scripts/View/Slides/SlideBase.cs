@@ -3,10 +3,13 @@
     using System;
     using System.Collections;
     using System.Linq;
-    using Shared;
+    using Shared.Coroutines;
+    using Shared.Exceptions;
     using Shared.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
+    using View.Animations;
+    using View.Interfaces;
 
     public abstract class SlideBase : MonoBehaviour
     {
