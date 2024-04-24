@@ -1,12 +1,18 @@
 ﻿namespace Logic.DataSystem
 {
     using System.IO;
+    using Shared.Debug;
     using UnityEngine;
 
     public static class DataSaver
     {
         private const string FileName = "game_data.json";
         private static readonly string _path = Path.Combine(Application.persistentDataPath, FileName);
+
+        static DataSaver()
+        {
+            DataLogger.Log(_path);
+        }
 
         public static void Save(DataManager dataManager)
         {
