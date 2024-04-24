@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections;
-    using System.Collections.Generic;
     using System.Linq;
     using Shared;
     using Shared.Extensions;
@@ -11,42 +10,71 @@
 
     public abstract class SlideBase : MonoBehaviour
     {
-        private readonly List<Coroutine> _coroutines = new();
+        private const int FinishingAnimationsCount = 1;
+
+        private readonly CoroutineManager _coroutineManager = new();
+
+        public SlideState SlideState { get; private set; }
+
+        private void OnEnable()
+        {
+            SlideState = SlideState.WaitingToShow;
+        }
 
         private void OnDisable()
         {
-            foreach (var coroutine in _coroutines.Where(coroutine => coroutine != null))
-                StopCoroutine(coroutine);
+            SlideState = SlideState.Hided;
 
-            _coroutines.Clear();
+            _coroutineManager.StopCors();
         }
 
         public virtual void Show()
         {
+            SlideState = SlideState.Showing;
+
+            _coroutineManager.StopCors();
             gameObject.SetActive(true);
 
-            foreach (var initable in GetComponentsInChildren<ISlideInitable>())
-                initable.Init();
+            GetComponentsInChildren<ISlideInitableHidable>().ForAll(x => x.Init());
+            GetComponentsInChildren<ISlideObjectAnimator>().ForAll(
+                x => _coroutineManager.StartCor(x.Init())
+            );
+
+            SlideState = SlideState.Ready;
         }
+
 
         public virtual void Hide()
         {
-            var maxTime = GetComponentsInChildren<ISlideHidable>()
-                .Select(initable => initable.Hide())
-                .Prepend(0f)
-                .Max();
+            SlideState = SlideState.Hiding;
+            gameObject.SetActive(true);
 
-            CoroutinesHelper.StartAfter(() => gameObject.SetActive(false), maxTime);
+            GetComponentsInChildren<ISlideInitableHidable>().ForAll(x => x.Hide());
+            GetComponentsInChildren<ISlideObjectAnimator>().ForAll(x =>
+                _coroutineManager.StartCor(x.Hide())
+            );
+
+            _coroutineManager.StartCor(
+                CoroutinesHelper.StartAfterCoroutine(
+                    () => gameObject.SetActive(false),
+                    () => _coroutineManager.CoroutinesCount != FinishingAnimationsCount
+                )
+            );
         }
 
-        public virtual void StartAnimation(
+        public virtual void HideImmediately()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public virtual IEnumerator StartAnimation(
             Graphic image,
             AnimationType animationType,
             float delay,
             float duration,
             bool recursively = true)
         {
-            CoroutinesHelper.StartAfter(
+            return CoroutinesHelper.StartAfterCoroutine(
                 () => StartAnimation(image, animationType, duration, recursively),
                 delay
             );
@@ -63,34 +91,14 @@
 
             Action a = animationType switch
             {
-                AnimationType.Vanishing => () => _coroutines.Add(CoroutinesHelper.Start(Vanishing(image, duration))),
-                AnimationType.Appearance => () => _coroutines.Add(CoroutinesHelper.Start(Appearance(image, duration))),
+                AnimationType.Vanishing => () =>
+                    _coroutineManager.StartCor(Animations.Vanishing(image, duration)),
+                AnimationType.Appearance => () =>
+                    _coroutineManager.StartCor(Animations.Appearance(image, duration)),
                 _ => () => Thrower.ArgumentOutOfRange()
             };
 
             a();
-        }
-
-        private static IEnumerator Appearance(Graphic image, float duration)
-        {
-            yield return AlphaLerpCoroutine(image, duration, t => t / duration);
-        }
-
-        private static IEnumerator Vanishing(Graphic image, float duration)
-        {
-            yield return AlphaLerpCoroutine(image, duration, t => 1 - t / duration);
-        }
-
-        private static IEnumerator AlphaLerpCoroutine(Graphic image, float duration, Func<float, float> alpha)
-        {
-            var t = 0f;
-
-            while (t < duration)
-            {
-                image.color = image.color.WithA(alpha(t));
-                yield return null;
-                t += Time.deltaTime;
-            }
         }
     }
 }

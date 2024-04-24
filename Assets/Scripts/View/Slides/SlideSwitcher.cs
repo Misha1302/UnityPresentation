@@ -1,6 +1,7 @@
 ﻿namespace View.Slides
 {
     using System;
+    using System.Linq;
     using UnityEngine;
 
     public class SlideSwitcher : MonoBehaviour
@@ -34,10 +35,21 @@
                 slides = GetComponentsInChildren<SlideBase>(true);
         }
 
-        private void ReRender(int prev, int cur)
+        private void ReRender(int prevInd, int curInd)
         {
-            slides[prev].Hide();
-            slides[cur].Show();
+            HideImmediatelyAllSlides();
+
+            var prev = slides[prevInd];
+            if (prev.SlideState != SlideState.Hiding) prev.Hide();
+
+            var cur = slides[curInd];
+            if (cur.SlideState != SlideState.Showing) cur.Show();
+        }
+
+        private void HideImmediatelyAllSlides()
+        {
+            foreach (var t in slides.Where(x => x.SlideState != SlideState.Hided))
+                t.HideImmediately();
         }
 
         private void Next() => SlideIndex++;

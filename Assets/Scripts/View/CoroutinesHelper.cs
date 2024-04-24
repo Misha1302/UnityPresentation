@@ -17,16 +17,23 @@
         public static Coroutine Start(IEnumerator enumerator) =>
             _gameObject.Value.StartCoroutine(enumerator);
 
-        public static Coroutine StartAfter(Action act, float time) =>
-            Start(StartAfterCoroutine(act, time));
-
-        private static IEnumerator StartAfterCoroutine(Action act, float time)
+        public static IEnumerator StartAfterCoroutine(Action act, float time)
         {
-            const float almostZero = 1e-7f;
-            if (time > almostZero) 
+            if (time > 0)
                 yield return new WaitForSeconds(time);
 
             act();
+        }
+
+        public static IEnumerator StartAfterCoroutine(Action act, Func<bool> waitWhile)
+        {
+            yield return new WaitWhile(waitWhile);
+            act();
+        }
+
+        public static void Stop(Coroutine coroutine)
+        {
+            _gameObject.Value.StopCoroutine(coroutine);
         }
 
 

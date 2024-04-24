@@ -10,7 +10,7 @@ namespace View
     using UnityEngine;
     using UnityEngine.UI;
 
-    public class ObjectVisualizer : MonoBehaviour, ISlideInitable
+    public class ObjectVisualizer : MonoBehaviour, ISlideInitableHidable
     {
         [SerializeField] private ObjectType visualizeType;
         [SerializeField] private string key;
@@ -20,12 +20,15 @@ namespace View
             ActObjType(SetText, SetAudio, SetImage, SetVideo);
         }
 
+        public void Hide()
+        {
+        }
+
 
         private T GetOrAddComponent<T>() where T : Component
         {
-            var audioSource = gameObject.GetComponent<T>();
-            if (audioSource == null)
-                audioSource = gameObject.AddComponent<T>();
+            var hasComponent = gameObject.TryGetComponent<T>(out var audioSource);
+            if (!hasComponent) audioSource = gameObject.AddComponent<T>();
 
             return audioSource;
         }

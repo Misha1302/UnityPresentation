@@ -1,6 +1,5 @@
 namespace View
 {
-    using System.Linq;
     using Logic.SaveSystem;
     using Shared.Extensions;
     using UnityEngine;
@@ -15,12 +14,8 @@ namespace View
         {
             videoPlayer.aspectRatio = VideoAspectRatio.Stretch;
 
-            if (DataManager.Instance.Videos.All(x => x.key != videoKey))
-                DataManager.Instance.Videos.Add(
-                    new Pair<string, string>(videoKey, @"C:\Users\Modern 14\Downloads\video_2024-03-24_11-09-13.mp4")
-                );
-
-            videoPlayer.url = DataManager.Instance.Videos.FindOrDefaultInstance(x => x.key == videoKey).value.PathToUrl();
+            videoPlayer.url = DataManager.Instance.Videos
+                .FindOrDefaultInstance(x => x.key == videoKey).value.PathToUrl();
 
             videoPlayer.Play();
         }

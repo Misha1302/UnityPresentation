@@ -1,12 +1,13 @@
 ﻿namespace View
 {
     using System;
+    using System.Collections;
     using Shared;
     using UnityEngine;
     using UnityEngine.UI;
     using View.Slides;
 
-    public class ObjectAnimator : MonoBehaviour, ISlideInitable, ISlideHidable
+    public class ObjectAnimator : MonoBehaviour, ISlideObjectAnimator
     {
         [SerializeField] private AnimationPlayMoment animationPlayMoment = AnimationPlayMoment.Start;
         [SerializeField] private AnimationType animationType = AnimationType.Appearance;
@@ -18,18 +19,11 @@
             Validate();
         }
 
-        public float Hide()
-        {
-            if (animationPlayMoment == AnimationPlayMoment.End)
-                PlayAnimation(0);
+        public IEnumerator Hide() =>
+            animationPlayMoment == AnimationPlayMoment.End ? PlayAnimation(-1) : null;
 
-            return duration;
-        }
-
-        public void Init()
-        {
-            SubscribeAnimationIfNeed();
-        }
+        public IEnumerator Init() =>
+            animationPlayMoment == AnimationPlayMoment.Start ? PlayAnimation(delay) : null;
 
         private void Validate()
         {
@@ -39,17 +33,11 @@
                 Thrower.Throw<InvalidOperationException>($"{nameof(animationType)} cannot be Invalid");
         }
 
-        private void SubscribeAnimationIfNeed()
-        {
-            if (animationPlayMoment == AnimationPlayMoment.Start)
-                PlayAnimation(delay);
-        }
-
-        private void PlayAnimation(float animationDelay)
+        private IEnumerator PlayAnimation(float animationDelay)
         {
             var graphic = GetComponent<Graphic>();
             var slide = GetComponentInParent<SlideBase>();
-            slide.StartAnimation(graphic, animationType, animationDelay, duration);
+            return slide.StartAnimation(graphic, animationType, animationDelay, duration);
         }
     }
 }
