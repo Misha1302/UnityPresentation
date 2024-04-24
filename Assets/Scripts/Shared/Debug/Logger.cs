@@ -9,7 +9,7 @@
 #if !DEBUG
             return;
 #endif
-            Debug.Log(string.Join(", ", obj));
+            Debug.Log(string.Join(" ", obj));
         }
     }
 }

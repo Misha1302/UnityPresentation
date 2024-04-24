@@ -14,23 +14,22 @@
             DataLogger.Log(_path);
         }
 
-        public static void Save(DataManager dataManager)
+        public static void Save(Data data)
         {
-            var dataManagerDto = dataManager.ToDto();
-            var value = JsonUtility.ToJson(dataManagerDto, true);
+            var value = JsonUtility.ToJson(data, true);
             File.WriteAllText(_path, value);
         }
 
-        public static DataManager Load()
+        public static Data Load()
         {
             if (!File.Exists(_path))
-                return DataManager.NewDefault();
+                return new Data();
 
             var json = File.ReadAllText(_path);
 
             return string.IsNullOrWhiteSpace(json)
-                ? DataManager.NewDefault()
-                : JsonUtility.FromJson<DataManagerDto>(json).FromDto();
+                ? new Data()
+                : JsonUtility.FromJson<Data>(json);
         }
     }
 }

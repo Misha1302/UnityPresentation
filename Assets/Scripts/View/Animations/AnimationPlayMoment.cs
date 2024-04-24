@@ -4,6 +4,7 @@
     {
         Invalid,
         Start,
-        End
+        End,
+        StartRepeating,
     }
 }

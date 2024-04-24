@@ -8,7 +8,7 @@
     {
         [SerializeField] private SlideBase[] slides;
 
-        private int _slideIndex;
+        private int _slideIndex = -1;
 
         public int SlideIndex
         {
@@ -21,6 +21,14 @@
                 if (prev != _slideIndex)
                     ReRender(prev, _slideIndex);
             }
+        }
+
+        private void Start()
+        {
+            foreach (var slide in slides)
+                slide.gameObject.SetActive(false);
+
+            SlideIndex = 0;
         }
 
         private void Update()
@@ -39,8 +47,11 @@
         {
             HideImmediatelyAllSlides();
 
-            var prev = slides[prevInd];
-            if (prev.SlideState != SlideState.Hiding) prev.Hide();
+            if (prevInd >= 0)
+            {
+                var prev = slides[prevInd];
+                if (prev.SlideState != SlideState.Hiding) prev.Hide();
+            }
 
             var cur = slides[curInd];
             if (cur.SlideState != SlideState.Showing) cur.Show();

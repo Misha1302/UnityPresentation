@@ -11,21 +11,24 @@ namespace View.DataEditor
 
         private void Start()
         {
-            inputField.text = JsonUtility.ToJson(DataManager.Instance.ToDto(), true).FromJsonString();
+            inputField.text = JsonUtility.ToJson(Data.Instance, true).FromJsonString();
             inputField.onEndEdit.AddListener(SaveChanges);
         }
 
         private static void SaveChanges(string dataString)
         {
             if (IsValidDataString(dataString, out var dto))
-                DataSaver.Save(dto.FromDto());
+                DataSaver.Save(dto);
         }
 
-        private static bool IsValidDataString(string dataString, out DataManagerDto dto)
+        private static bool IsValidDataString(string dataString, out Data dto)
         {
-            dto = JsonUtility.FromJson<DataManagerDto>(dataString.ToJsonString());
+            dto = JsonUtility.FromJson<Data>(dataString.ToJsonString());
 
-            return dto.audio is not null && dto.texts is not null && dto.videos is not null;
+            return !string.IsNullOrWhiteSpace(dto.audioDirectory)
+                   && !string.IsNullOrWhiteSpace(dto.imagesDirectory)
+                   && !string.IsNullOrWhiteSpace(dto.textsDirectory)
+                   && !string.IsNullOrWhiteSpace(dto.textsDirectory);
         }
     }
 }

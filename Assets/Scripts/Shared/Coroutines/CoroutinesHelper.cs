@@ -2,20 +2,33 @@
 {
     using System;
     using System.Collections;
+    using JetBrains.Annotations;
     using UnityEngine;
     using Object = UnityEngine.Object;
 
     public static class CoroutinesHelper
     {
-        private static readonly Lazy<MonoBeh> _gameObject =
-            new(() =>
+        [CanBeNull] private static MonoBeh _gameObject;
+
+        private static MonoBeh GameObject
+        {
+            get
             {
-                var obj = Object.FindObjectOfType<MonoBeh>();
-                return obj != null ? obj : new GameObject().AddComponent<MonoBeh>();
-            });
+                if (_gameObject == null)
+                    _gameObject = GetGameObject();
+
+                return _gameObject;
+            }
+        }
+
+        private static MonoBeh GetGameObject()
+        {
+            var obj = Object.FindObjectOfType<MonoBeh>();
+            return obj != null ? obj : new GameObject().AddComponent<MonoBeh>();
+        }
 
         public static Coroutine Start(IEnumerator enumerator) =>
-            _gameObject.Value.StartCoroutine(enumerator);
+            GameObject.StartCoroutine(enumerator);
 
         public static IEnumerator StartAfterCoroutine(Action act, float time)
         {
@@ -33,7 +46,7 @@
 
         public static void Stop(Coroutine coroutine)
         {
-            _gameObject.Value.StopCoroutine(coroutine);
+            GameObject.StopCoroutine(coroutine);
         }
 
 

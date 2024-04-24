@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using Shared.Coroutines;
+    using Shared.Debug;
     using UnityEngine;
     using UnityEngine.Networking;
 
@@ -42,6 +43,7 @@
 
             if (www.result == UnityWebRequest.Result.Success)
                 onSuccess(www);
+            else DataLogger.Log("www result was", www.result);
         }
     }
 }

@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using Shared.Exceptions;
+    using Shared.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
     using View.Interfaces;
@@ -15,16 +16,26 @@
         [SerializeField] private float delay;
         [SerializeField] private float duration = 1f;
 
+        private float _standardAlpha = -1;
+
         private void Start()
         {
             Validate();
+        }
+
+        private void OnEnable()
+        {
+            var graphic = GetComponent<Graphic>();
+            if (Mathf.Approximately(_standardAlpha, -1))
+                _standardAlpha = GetComponent<Graphic>().color.a;
+            graphic.color = graphic.color.WithA(_standardAlpha);
         }
 
         public IEnumerator Hide() =>
             animationPlayMoment == AnimationPlayMoment.End ? PlayAnimation(-1) : null;
 
         public IEnumerator Init() =>
-            animationPlayMoment == AnimationPlayMoment.Start ? PlayAnimation(delay) : null;
+            IsNeedPlayInStart() ? PlayAnimation(delay) : null;
 
         private void Validate()
         {
@@ -38,7 +49,12 @@
         {
             var graphic = GetComponent<Graphic>();
             var slide = GetComponentInParent<SlideBase>();
-            return slide.StartAnimation(graphic, animationType, animationDelay, duration);
+            return slide.StartAnimation(graphic, animationType, animationDelay, duration, IsNeedRepeating());
         }
+
+        private bool IsNeedPlayInStart() =>
+            animationPlayMoment is AnimationPlayMoment.Start or AnimationPlayMoment.StartRepeating;
+
+        private bool IsNeedRepeating() => animationPlayMoment == AnimationPlayMoment.StartRepeating;
     }
 }

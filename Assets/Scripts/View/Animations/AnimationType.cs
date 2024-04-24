@@ -4,6 +4,7 @@
     {
         Invalid,
         Appearance,
-        Vanishing
+        Vanishing,
+        Rotating
     }
 }

@@ -52,6 +52,7 @@
             SlideState = SlideState.Hiding;
             gameObject.SetActive(true);
 
+            _coroutineManager.StopCors();
             GetComponentsInChildren<ISlideInitableHidable>().ForAll(x => x.Hide());
             GetComponentsInChildren<ISlideObjectAnimator>().ForAll(x =>
                 _coroutineManager.StartCor(x.Hide())
@@ -75,29 +76,38 @@
             AnimationType animationType,
             float delay,
             float duration,
+            bool repeat = false,
             bool recursively = true)
         {
             return CoroutinesHelper.StartAfterCoroutine(
-                () => StartAnimation(image, animationType, duration, recursively),
+                () => StartAnimation(image, animationType, duration, repeat, recursively),
                 delay
             );
         }
 
-        private void StartAnimation(Graphic image, AnimationType animationType, float duration, bool recursively)
+        private void StartAnimation(
+            Graphic image,
+            AnimationType animationType,
+            float duration,
+            bool repeat,
+            bool recursively)
         {
             if (recursively)
             {
                 var anyOfThisLevel = image.GetComponents<Graphic>();
                 foreach (var img in image.GetComponentsInChildren<Graphic>().Where(x => !anyOfThisLevel.Contains(x)))
-                    StartAnimation(img, animationType, duration, true);
+                    StartAnimation(img, animationType, duration, repeat, true);
             }
 
             Action a = animationType switch
             {
                 AnimationType.Vanishing => () =>
-                    _coroutineManager.StartCor(Animations.Vanishing(image, duration)),
+                    _coroutineManager.StartCor(Animations.Vanishing(image, duration, repeat)),
                 AnimationType.Appearance => () =>
-                    _coroutineManager.StartCor(Animations.Appearance(image, duration)),
+                    _coroutineManager.StartCor(Animations.Appearance(image, duration, repeat)),
+                AnimationType.Rotating => () =>
+                    _coroutineManager.StartCor(Animations.Rotate(image, duration, Vector3.zero, Vector3.forward * 360f,
+                        repeat)),
                 _ => () => Thrower.ArgumentOutOfRange()
             };
 
