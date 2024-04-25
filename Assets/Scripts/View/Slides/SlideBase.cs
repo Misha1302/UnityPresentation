@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
     using Shared.Coroutines;
     using Shared.Exceptions;
@@ -71,16 +72,16 @@
             gameObject.SetActive(false);
         }
 
-        public virtual IEnumerator StartAnimation(
-            Graphic image,
+        public virtual IEnumerator StartAnimation(Graphic image,
             AnimationType animationType,
             float delay,
             float duration,
             bool repeat = false,
-            bool recursively = true)
+            bool recursively = true,
+            bool includeAnimators = false)
         {
             return CoroutinesHelper.StartAfterCoroutine(
-                () => StartAnimation(image, animationType, duration, repeat, recursively),
+                () => StartAnimation(image, animationType, duration, repeat, recursively, includeAnimators),
                 delay
             );
         }
@@ -90,13 +91,14 @@
             AnimationType animationType,
             float duration,
             bool repeat,
-            bool recursively)
+            bool recursively,
+            bool includeAnimators)
         {
             if (recursively)
             {
-                var anyOfThisLevel = image.GetComponents<Graphic>();
-                foreach (var img in image.GetComponentsInChildren<Graphic>().Where(x => !anyOfThisLevel.Contains(x)))
-                    StartAnimation(img, animationType, duration, repeat, true);
+                var enumerable = GetComponentsToAnimate(image, includeAnimators);
+                foreach (var img in enumerable)
+                    StartAnimation(img, animationType, duration, repeat, true, includeAnimators);
             }
 
             Action a = animationType switch
@@ -112,6 +114,15 @@
             };
 
             a();
+        }
+
+        public static IEnumerable<Graphic> GetComponentsToAnimate(Graphic image, bool includeAnimators)
+        {
+            var anyOfThisLevel = image.GetComponents<Graphic>().ToList();
+            var enumerable = image.GetComponentsInChildren<Graphic>(true)
+                .Where(x => !anyOfThisLevel.Contains(x))
+                .Where(x => includeAnimators || !x.TryGetComponent<ObjectAnimator>(out _));
+            return enumerable;
         }
     }
 }

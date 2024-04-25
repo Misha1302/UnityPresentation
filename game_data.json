@@ -1,0 +1,17 @@
+{
+    "audioDirectory": "Assets\\Presentation\\ИГРА - 2024-ФИНАЛ\\ppt\\media\\VideosAndAudio",
+    "imagesDirectory": "Assets\\Presentation\\ИГРА - 2024-ФИНАЛ\\ppt\\media\\Images",
+    "textsList": [
+        "Шестое чувство",
+        "Обоняние",
+        "Вкус",
+        "Осязание",
+        "Слух",
+        "Интуиция",
+        "Зрение",
+        "Раунд 1",
+        "Вкус",
+        "Ваша задача угадать\n8 популярныъ вкусов напитков\nиз которых мы удалили сахар и углекислый газ"
+    ],
+    "videosDirectory": "Assets\\Presentation\\ИГРА - 2024-ФИНАЛ\\ppt\\media\\VideosAndAudio"
+}

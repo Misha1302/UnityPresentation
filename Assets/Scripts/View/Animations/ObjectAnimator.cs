@@ -16,27 +16,18 @@
         [SerializeField] private AnimationType animationType = AnimationType.Appearance;
         [SerializeField] private float delay;
         [SerializeField] private float duration = 1f;
+        [SerializeField] private bool recursive = true;
+        [SerializeField] private bool includeAnimators;
 
-        private float _standardAlpha = -1;
 
         private void Start()
         {
             Validate();
         }
 
-        private void OnEnable()
-        {
-            var graphic = GetComponent<Graphic>();
-            if (Mathf.Approximately(_standardAlpha, -1))
-                _standardAlpha = GetComponent<Graphic>().color.a;
-            graphic.color = graphic.color.WithA(_standardAlpha);
-        }
+        public virtual IEnumerator Hide() => animationPlayMoment.IsNeedPlayInEnd() ? PlayAnimation(-1) : null;
 
-        public IEnumerator Hide() =>
-            animationPlayMoment == AnimationPlayMoment.End ? PlayAnimation(-1) : null;
-
-        public IEnumerator Init() =>
-            IsNeedPlayInStart() ? PlayAnimation(delay) : null;
+        public virtual IEnumerator Init() => animationPlayMoment.IsNeedPlayInStart() ? PlayAnimation(delay) : null;
 
         public List<Component> GetNecessaryComponents() => new() { GetComponent<Graphic>() };
 
@@ -52,12 +43,8 @@
         {
             var graphic = GetComponent<Graphic>();
             var slide = GetComponentInParent<SlideBase>();
-            return slide.StartAnimation(graphic, animationType, animationDelay, duration, IsNeedRepeating());
+            return slide.StartAnimation(graphic, animationType, animationDelay, duration,
+                animationPlayMoment.IsNeedRepeating(), recursive, includeAnimators);
         }
-
-        private bool IsNeedPlayInStart() =>
-            animationPlayMoment is AnimationPlayMoment.Start or AnimationPlayMoment.StartRepeating;
-
-        private bool IsNeedRepeating() => animationPlayMoment == AnimationPlayMoment.StartRepeating;
     }
 }

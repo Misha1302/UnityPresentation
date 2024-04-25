@@ -10,18 +10,26 @@
     {
         public static IEnumerator Appearance(Graphic image, float duration, bool repeat)
         {
+            var startValue = image.color.a;
+            const float endValue = 1f;
+
             do
             {
-                yield return LerpCoroutine(duration, t => image.color = image.color.WithA(t));
+                yield return LerpCoroutine(duration,
+                    t => image.color = image.color.WithA(Mathf.Lerp(startValue, endValue, t)));
                 // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
             } while (repeat);
         }
 
         public static IEnumerator Vanishing(Graphic image, float duration, bool repeat)
         {
+            var startValue = image.color.a;
+            const float endValue = 0f;
+
             do
             {
-                yield return LerpCoroutine(duration, t => image.color = image.color.WithA(1 - t));
+                yield return LerpCoroutine(duration,
+                    t => image.color = image.color.WithA(Mathf.Lerp(startValue, endValue, t)));
                 // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
             } while (repeat);
         }

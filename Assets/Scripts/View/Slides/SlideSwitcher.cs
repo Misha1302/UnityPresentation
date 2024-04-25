@@ -6,9 +6,8 @@
 
     public class SlideSwitcher : MonoBehaviour
     {
-        [SerializeField] private SlideBase[] slides;
-
         private int _slideIndex = -1;
+        private SlideBase[] _slides;
 
         public int SlideIndex
         {
@@ -16,7 +15,7 @@
             set
             {
                 var prev = _slideIndex;
-                _slideIndex = Math.Clamp(value, 0, slides.Length - 1);
+                _slideIndex = Math.Clamp(value, 0, _slides.Length - 1);
 
                 if (prev != _slideIndex)
                     ReRender(prev, _slideIndex);
@@ -25,7 +24,8 @@
 
         private void Start()
         {
-            foreach (var slide in slides)
+            _slides = GetComponentsInChildren<SlideBase>(true);
+            foreach (var slide in _slides)
                 slide.gameObject.SetActive(false);
 
             SlideIndex = 0;
@@ -37,30 +37,28 @@
             if (Input.GetKeyDown(KeyCode.RightArrow)) Next();
         }
 
-        private void OnValidate()
-        {
-            if (slides == null || slides.Length == 0)
-                slides = GetComponentsInChildren<SlideBase>(true);
-        }
-
         private void ReRender(int prevInd, int curInd)
         {
             HideImmediatelyAllSlides();
 
             if (prevInd >= 0)
             {
-                var prev = slides[prevInd];
+                var prev = _slides[prevInd];
                 if (prev.SlideState != SlideState.Hiding) prev.Hide();
             }
 
-            var cur = slides[curInd];
+            var cur = _slides[curInd];
             if (cur.SlideState != SlideState.Showing) cur.Show();
         }
 
-        private void HideImmediatelyAllSlides()
+        private void HideImmediatelyAllSlides(params int[] except)
         {
-            foreach (var t in slides.Where(x => x.SlideState != SlideState.Hided))
-                t.HideImmediately();
+            for (var index = 0; index < _slides.Length; index++)
+            {
+                if (except.Contains(index)) continue;
+
+                _slides[index].HideImmediately();
+            }
         }
 
         private void Next() => SlideIndex++;

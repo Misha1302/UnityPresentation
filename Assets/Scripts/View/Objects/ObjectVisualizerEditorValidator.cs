@@ -14,14 +14,13 @@
 
         public void TryValidate()
         {
-#if !UNITY_EDITOR
-            return;
-#endif
+#if UNITY_EDITOR
             const float delay = 0.02f;
             if (Time.time - _prevCallTime < delay) return;
             if (Application.isPlaying) return;
 
             EditorApplication.delayCall += Validate;
+#endif
         }
 
         private void Validate()
