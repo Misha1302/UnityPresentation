@@ -18,11 +18,14 @@
 
         private void SetVideo()
         {
+            var path = Data.Instance.GetVideoPath(key).PathToUrl();
+            if (!path.IsValid()) return;
+
             var player = GetOrAddComponent<CustomVideoPlayer>();
             var image = GetOrAddComponent<RawImage>();
             var renderTexture = new RenderTexture(Screen.currentResolution.width, Screen.currentResolution.height, 16);
 
-            player.Init(Data.Instance.GetVideoPath(key).PathToUrl(), renderTexture);
+            player.Init(path, renderTexture);
 
             image.texture = renderTexture;
         }

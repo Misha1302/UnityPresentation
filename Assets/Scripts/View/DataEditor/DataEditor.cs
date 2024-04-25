@@ -27,8 +27,8 @@ namespace View.DataEditor
 
             return !string.IsNullOrWhiteSpace(dto.audioDirectory)
                    && !string.IsNullOrWhiteSpace(dto.imagesDirectory)
-                   && !string.IsNullOrWhiteSpace(dto.textsDirectory)
-                   && !string.IsNullOrWhiteSpace(dto.textsDirectory);
+                   && dto.textsList != null
+                   && !string.IsNullOrWhiteSpace(dto.videosDirectory);
         }
     }
 }

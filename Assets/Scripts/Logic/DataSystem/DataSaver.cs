@@ -22,13 +22,18 @@
 
         public static Data Load()
         {
+            var newInstance = new Data();
+
             if (!File.Exists(_path))
-                return new Data();
+            {
+                Save(newInstance);
+                return newInstance;
+            }
 
             var json = File.ReadAllText(_path);
 
             return string.IsNullOrWhiteSpace(json)
-                ? new Data()
+                ? newInstance
                 : JsonUtility.FromJson<Data>(json);
         }
     }

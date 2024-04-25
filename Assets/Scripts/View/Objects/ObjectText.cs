@@ -1,7 +1,6 @@
 ﻿namespace View.Objects
 {
     using System.Collections.Generic;
-    using System.IO;
     using Logic.DataSystem;
     using TMPro;
     using UnityEngine;
@@ -10,9 +9,9 @@
     {
         [SerializeField] private float fontSize = 36;
         [SerializeField] private TextAlignmentOptions textAlignment;
-        
+
         public override List<Component> GetNecessaryComponents() => new() { GetOrAddComponent<TextMeshProUGUI>() };
-        
+
         public override void Init()
         {
             SetText();
@@ -20,11 +19,13 @@
 
         private void SetText()
         {
-            var text = GetOrAddComponent<TextMeshProUGUI>();
+            if (!int.TryParse(key, out var index)) return;
 
-            text.text = File.ReadAllText(Data.Instance.GetTextPath(key));
+            var text = GetOrAddComponent<TextMeshProUGUI>();
+            text.text = Data.Instance.GetText(index);
             text.alignment = textAlignment;
             text.fontSize = fontSize;
+            text.enableWordWrapping = false;
         }
     }
 }

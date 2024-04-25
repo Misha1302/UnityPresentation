@@ -1,6 +1,7 @@
 namespace Logic.DataSystem
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
 
     [Serializable]
@@ -10,22 +11,25 @@ namespace Logic.DataSystem
 
         public string audioDirectory;
         public string imagesDirectory;
-        public string textsDirectory;
+        public List<string> textsList;
         public string videosDirectory;
 
-        public Data(string audioDirectory, string imagesDirectory, string textsDirectory, string videosDirectory)
+        public Data(string audioDirectory,
+            string imagesDirectory,
+            List<string> textsList,
+            string videosDirectory)
         {
             this.audioDirectory = audioDirectory;
             this.imagesDirectory = imagesDirectory;
-            this.textsDirectory = textsDirectory;
+            this.textsList = textsList;
             this.videosDirectory = videosDirectory;
         }
 
         public Data() : this(
-            @"C:\Users\Modern 14\UnityProjects\UnityPresentation\Assets\Presentation\ИГРА - 2024-ФИНАЛ\ppt\media\VideosAndAudio",
-            @"C:\Users\Modern 14\UnityProjects\UnityPresentation\Assets\Presentation\ИГРА - 2024-ФИНАЛ\ppt\media\Images",
-            @"C:\Users\Modern 14\UnityProjects\UnityPresentation\Assets\Presentation\ИГРА - 2024-ФИНАЛ\ppt\media\Texts",
-            @"C:\Users\Modern 14\UnityProjects\UnityPresentation\Assets\Presentation\ИГРА - 2024-ФИНАЛ\ppt\media\VideosAndAudio"
+            @"Assets\Presentation\ИГРА - 2024-ФИНАЛ\ppt\media\VideosAndAudio",
+            @"Assets\Presentation\ИГРА - 2024-ФИНАЛ\ppt\media\Images",
+            new List<string> { "Hello", "World", "!" },
+            @"Assets\Presentation\ИГРА - 2024-ФИНАЛ\ppt\media\VideosAndAudio"
         )
         {
         }
@@ -34,7 +38,7 @@ namespace Logic.DataSystem
 
         public string GetAudioPath(string name) => Path.Combine(audioDirectory, name);
         public string GetImagePath(string name) => Path.Combine(imagesDirectory, name);
-        public string GetTextPath(string name) => Path.Combine(textsDirectory, name);
+        public string GetText(int index) => textsList[index];
         public string GetVideoPath(string name) => Path.Combine(videosDirectory, name);
 
         private void SaveChanges() => DataSaver.Save(this);
