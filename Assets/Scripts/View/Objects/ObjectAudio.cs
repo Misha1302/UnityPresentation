@@ -1,5 +1,6 @@
 ﻿namespace View.Objects
 {
+    using System.Collections.Generic;
     using Logic.DataSystem;
     using Shared.Extensions;
     using Shared.ResourceLoader;
@@ -18,6 +19,8 @@
         {
             GetOrAddComponent<AudioSource>().Stop();
         }
+
+        public override List<Component> GetNecessaryComponents() => new() { GetOrAddComponent<AudioSource>() };
 
         private void SetAudio()
         {

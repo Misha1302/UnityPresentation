@@ -1,5 +1,6 @@
 namespace View.Objects
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using UnityEditor;
@@ -16,6 +17,8 @@ namespace View.Objects
         {
         }
 
+        public abstract List<Component> GetNecessaryComponents();
+
 
         protected T GetOrAddComponent<T>() where T : Component
         {
@@ -26,12 +29,19 @@ namespace View.Objects
         }
 
 #if UNITY_EDITOR
+        private float _prevCallTime;
+
         private void OnValidate()
         {
             EditorApplication.delayCall += () =>
             {
                 if (Application.isPlaying)
                     return;
+
+                if (Time.time - _prevCallTime < 0.1f)
+                    return;
+
+                _prevCallTime = Time.time;
 
                 RemoveAllComponents();
 
@@ -48,11 +58,7 @@ namespace View.Objects
 
         private void RemoveAllComponents(int recDepth = 0)
         {
-            // TODO: добавить в ISlideObjectComponent зависимые компоненты и игнорировать их
-            var components = GetComponents<Component>()
-                .Where(x => x != null && x is not RectTransform and not Transform and not CanvasRenderer
-                    and not ISlideObjectComponent)
-                .ToArray();
+            var components = GetComponentsToRemove();
 
             if (recDepth == 15)
                 throw new LockRecursionException(string.Join(", ", components.Select(x => x.GetType())));
@@ -62,6 +68,27 @@ namespace View.Objects
 
             if (components.Any(x => x != null))
                 RemoveAllComponents(recDepth + 1);
+        }
+
+        private List<Component> GetComponentsToRemove()
+        {
+            var components = GetComponents<Component>().ToList();
+
+            components.RemoveAll(x => x == null || x is RectTransform or Transform or CanvasRenderer);
+
+            for (var i = 0; i < components.Count; i++)
+            {
+                if (components[i] is not ISlideObjectComponent slideComponent)
+                    continue;
+
+                var necessaryComponents = slideComponent.GetNecessaryComponents();
+                var oldCount = components.Count;
+                components.RemoveAll(x => necessaryComponents.Contains(x));
+                if (components.Count != oldCount) i = 0;
+            }
+
+            components.RemoveAll(x => x is ISlideObjectComponent);
+            return components;
         }
 #endif
     }

@@ -1,5 +1,6 @@
 ﻿namespace View.Objects
 {
+    using System.Collections.Generic;
     using Logic.DataSystem;
     using Shared.Extensions;
     using Shared.ResourceLoader;
@@ -20,6 +21,8 @@
 
             if (img.sprite == null) SetImage();
         }
+
+        public override List<Component> GetNecessaryComponents() => new() { GetOrAddComponent<Image>() };
 
         public override void Init()
         {

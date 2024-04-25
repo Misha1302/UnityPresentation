@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using Shared.Exceptions;
     using Shared.Extensions;
     using UnityEngine;
@@ -36,6 +37,8 @@
 
         public IEnumerator Init() =>
             IsNeedPlayInStart() ? PlayAnimation(delay) : null;
+
+        public List<Component> GetNecessaryComponents() => new() { GetComponent<Graphic>() };
 
         private void Validate()
         {

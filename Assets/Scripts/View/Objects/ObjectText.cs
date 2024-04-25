@@ -1,5 +1,6 @@
 ﻿namespace View.Objects
 {
+    using System.Collections.Generic;
     using System.IO;
     using Logic.DataSystem;
     using TMPro;
@@ -9,7 +10,9 @@
     {
         [SerializeField] private float fontSize = 36;
         [SerializeField] private TextAlignmentOptions textAlignment;
-
+        
+        public override List<Component> GetNecessaryComponents() => new() { GetOrAddComponent<TextMeshProUGUI>() };
+        
         public override void Init()
         {
             SetText();

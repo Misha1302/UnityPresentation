@@ -1,5 +1,6 @@
 ﻿namespace View.Objects
 {
+    using System.Collections.Generic;
     using Logic.DataSystem;
     using Shared.Extensions;
     using UnityEngine;
@@ -11,6 +12,9 @@
         {
             SetVideo();
         }
+
+        public override List<Component> GetNecessaryComponents() => new()
+            { GetOrAddComponent<CustomVideoPlayer>(), GetOrAddComponent<RawImage>() };
 
         private void SetVideo()
         {
