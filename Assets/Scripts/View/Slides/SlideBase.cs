@@ -115,7 +115,7 @@
                     _coroutineManager.StartCor(
                         Animations.Rotate(graphic, duration, Vector3.zero, Vector3.forward * 360f, repeat)
                     ),
-                _ => () => Thrower.ArgumentOutOfRange()
+                _ => Thrower.Throw<ArgumentOutOfRangeException>
             };
 
             a();

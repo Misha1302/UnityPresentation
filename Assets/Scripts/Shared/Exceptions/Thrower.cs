@@ -7,10 +7,6 @@
     public static class Thrower
     {
         [DoesNotReturn]
-        public static void ArgumentOutOfRange(string msg = null) =>
-            Throw<ArgumentOutOfRangeException>(msg);
-
-        [DoesNotReturn]
         public static void Throw<T>() where T : Exception, new() =>
             Throw<T>(null);
 

@@ -1,6 +1,5 @@
 ﻿namespace View.Animations
 {
-    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
@@ -11,20 +10,18 @@
     {
         private Dictionary<Graphic, float> _standardAlphas;
 
-        public override IEnumerator Init()
-        {
-            SetAlphas();
-            return base.Init();
-        }
-
         private void OnValidate()
         {
             recursive = true;
 
-            if (animationPlayMoment.IsNeedPlayInStart())
-                includeAnimators = false;
-            else if (animationPlayMoment.IsNeedPlayInEnd())
-                includeAnimators = true;
+            if (animationPlayMoment.IsNeedPlayInStart()) includeAnimators = false;
+            else if (animationPlayMoment.IsNeedPlayInEnd()) includeAnimators = true;
+        }
+
+        public override IEnumerator Init()
+        {
+            SetAlphas();
+            return base.Init();
         }
 
         private void SetAlphas()

@@ -5,6 +5,6 @@
         Invalid,
         Start,
         End,
-        StartRepeating,
+        StartRepeating
     }
 }
