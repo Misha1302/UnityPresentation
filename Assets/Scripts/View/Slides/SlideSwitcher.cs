@@ -1,13 +1,15 @@
 ﻿namespace View.Slides
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using Shared.Extensions;
     using UnityEngine;
 
     public class SlideSwitcher : MonoBehaviour
     {
         private int _slideIndex = -1;
-        private SlideBase[] _slides;
+        private List<SlideBase> _slides;
 
         public int SlideIndex
         {
@@ -15,7 +17,7 @@
             set
             {
                 var prev = _slideIndex;
-                _slideIndex = Math.Clamp(value, 0, _slides.Length - 1);
+                _slideIndex = Math.Clamp(value, 0, _slides.Count - 1);
 
                 if (prev != _slideIndex)
                     ReRender(prev, _slideIndex);
@@ -24,7 +26,8 @@
 
         private void Start()
         {
-            _slides = GetComponentsInChildren<SlideBase>(true);
+            _slides = GetComponentsInChildren<SlideBase>(true).ToList();
+            _slides.Sort((x, y) => x.name.CompareStrings(y.name));
             foreach (var slide in _slides)
                 slide.gameObject.SetActive(false);
 
@@ -53,7 +56,7 @@
 
         private void HideImmediatelyAllSlides(params int[] except)
         {
-            for (var index = 0; index < _slides.Length; index++)
+            for (var index = 0; index < _slides.Count; index++)
             {
                 if (except.Contains(index)) continue;
 
