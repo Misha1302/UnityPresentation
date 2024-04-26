@@ -7,7 +7,7 @@
 
     public class ObjectText : ObjectVisualizer
     {
-        [SerializeField] private TextAlignmentOptions textAlignment;
+        [SerializeField] private TextAlignmentOptions textAlignment = TextAlignmentOptions.Center;
         [SerializeField] private float fontSize = 36;
 
         public override List<Component> GetNecessaryComponents() => new() { GetOrAddComponent<TextMeshProUGUI>() };
