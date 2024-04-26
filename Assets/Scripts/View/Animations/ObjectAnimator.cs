@@ -12,12 +12,12 @@
 
     public class ObjectAnimator : MonoBehaviour, ISlideObjectAnimator
     {
-        [SerializeField] private AnimationPlayMoment animationPlayMoment = AnimationPlayMoment.Start;
-        [SerializeField] private AnimationType animationType = AnimationType.Appearance;
-        [SerializeField] private float delay;
-        [SerializeField] private float duration = 1f;
-        [SerializeField] private bool recursive = true;
-        [SerializeField] private bool includeAnimators;
+        [SerializeField] protected AnimationPlayMoment animationPlayMoment = AnimationPlayMoment.Start;
+        [SerializeField] protected AnimationType animationType = AnimationType.Appearance;
+        [SerializeField] protected float delay;
+        [SerializeField] protected float duration = 1f;
+        [SerializeField] protected bool recursive = true;
+        [SerializeField] protected bool includeAnimators;
 
 
         private void Start()
@@ -41,9 +41,8 @@
 
         private IEnumerator PlayAnimation(float animationDelay)
         {
-            var graphic = GetComponent<Graphic>();
             var slide = GetComponentInParent<SlideBase>();
-            return slide.StartAnimation(graphic, animationType, animationDelay, duration,
+            return slide.StartAnimation(gameObject, animationType, animationDelay, duration,
                 animationPlayMoment.IsNeedRepeating(), recursive, includeAnimators);
         }
     }

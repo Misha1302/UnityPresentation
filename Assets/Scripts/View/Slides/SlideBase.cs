@@ -72,7 +72,8 @@
             gameObject.SetActive(false);
         }
 
-        public virtual IEnumerator StartAnimation(Graphic image,
+        public virtual IEnumerator StartAnimation(
+            GameObject go,
             AnimationType animationType,
             float delay,
             float duration,
@@ -81,13 +82,13 @@
             bool includeAnimators = false)
         {
             return CoroutinesHelper.StartAfterCoroutine(
-                () => StartAnimation(image, animationType, duration, repeat, recursively, includeAnimators),
+                () => StartAnimation(go, animationType, duration, repeat, recursively, includeAnimators),
                 delay
             );
         }
 
         private void StartAnimation(
-            Graphic image,
+            GameObject go,
             AnimationType animationType,
             float duration,
             bool repeat,
@@ -96,32 +97,38 @@
         {
             if (recursively)
             {
-                var enumerable = GetComponentsToAnimate(image, includeAnimators);
+                var enumerable = GetComponentsToAnimate(go, includeAnimators);
                 foreach (var img in enumerable)
-                    StartAnimation(img, animationType, duration, repeat, true, includeAnimators);
+                    StartAnimation(img.gameObject, animationType, duration, repeat, false, includeAnimators);
             }
+
+            var graphic = go.GetComponent<Graphic>();
+            if (graphic == null) return;
 
             Action a = animationType switch
             {
                 AnimationType.Vanishing => () =>
-                    _coroutineManager.StartCor(Animations.Vanishing(image, duration, repeat)),
+                    _coroutineManager.StartCor(Animations.Vanishing(graphic, duration, repeat)),
                 AnimationType.Appearance => () =>
-                    _coroutineManager.StartCor(Animations.Appearance(image, duration, repeat)),
+                    _coroutineManager.StartCor(Animations.Appearance(graphic, duration, repeat)),
                 AnimationType.Rotating => () =>
-                    _coroutineManager.StartCor(Animations.Rotate(image, duration, Vector3.zero, Vector3.forward * 360f,
-                        repeat)),
+                    _coroutineManager.StartCor(
+                        Animations.Rotate(graphic, duration, Vector3.zero, Vector3.forward * 360f, repeat)
+                    ),
                 _ => () => Thrower.ArgumentOutOfRange()
             };
 
             a();
         }
 
-        public static IEnumerable<Graphic> GetComponentsToAnimate(Graphic image, bool includeAnimators)
+        private static IEnumerable<Graphic> GetComponentsToAnimate(GameObject go, bool includeAnimators)
         {
-            var anyOfThisLevel = image.GetComponents<Graphic>().ToList();
-            var enumerable = image.GetComponentsInChildren<Graphic>(true)
-                .Where(x => !anyOfThisLevel.Contains(x))
-                .Where(x => includeAnimators || !x.TryGetComponent<ObjectAnimator>(out _));
+            var img = go.GetComponent<Graphic>();
+
+            var enumerable = go.GetComponentsInChildren<Graphic>(true)
+                .Where(x => includeAnimators || !x.TryGetComponent<ObjectAnimator>(out _))
+                .Where(x => x != img);
+
             return enumerable;
         }
     }

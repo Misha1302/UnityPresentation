@@ -1,11 +1,11 @@
 ﻿namespace View.Animations
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using Shared.Extensions;
     using UnityEngine.UI;
-    using View.Slides;
 
     public class SlideAnimator : ObjectAnimator
     {
@@ -14,15 +14,24 @@
         public override IEnumerator Init()
         {
             SetAlphas();
-
             return base.Init();
+        }
+
+        private void OnValidate()
+        {
+            recursive = true;
+
+            if (animationPlayMoment.IsNeedPlayInStart())
+                includeAnimators = false;
+            else if (animationPlayMoment.IsNeedPlayInEnd())
+                includeAnimators = true;
         }
 
         private void SetAlphas()
         {
             if (_standardAlphas == null)
             {
-                var components = SlideBase.GetComponentsToAnimate(GetComponent<Graphic>(), true);
+                var components = GetComponentsInChildren<Graphic>();
                 _standardAlphas = components.ToDictionary(x => x, x => x.color.a);
             }
             else
