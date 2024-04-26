@@ -8,7 +8,6 @@
     using Enumerable = System.Linq.Enumerable;
 
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(ObjectVisualizer))]
     public class ObjectVisualizerEditorValidator : MonoBehaviour
     {
         private float _prevCallTime;
