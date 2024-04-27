@@ -1,11 +1,11 @@
 ﻿namespace View.Objects.Helpers
 {
     using System.Collections.Generic;
+    using System.Linq;
     using UnityEditor;
     using UnityEngine;
     using View.Interfaces;
     using View.Objects.Visualizers;
-    using Enumerable = System.Linq.Enumerable;
 
     [DisallowMultipleComponent]
     public class ObjectVisualizerEditorValidator : MonoBehaviour
@@ -27,7 +27,7 @@
         {
             _prevCallTime = Time.time;
             RemoveAllComponents();
-            GetComponent<ObjectVisualizer>().Init();
+            GetComponent<ObjectVisualizer>().PreShow();
         }
 
         private void RemoveAllComponents()
@@ -38,7 +38,7 @@
 
         private List<Component> GetComponentsToRemove()
         {
-            var components = Enumerable.ToList(GetComponents<Component>());
+            var components = GetComponents<Component>().ToList();
 
             components.RemoveAll(x => x == null || x is Transform or CanvasRenderer or ObjectVisualizerEditorValidator);
 

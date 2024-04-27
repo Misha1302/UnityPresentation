@@ -5,7 +5,7 @@
 
     public interface ISlideObjectAnimator : ISlideObjectComponent
     {
-        [CanBeNull] public IEnumerator Init();
+        [CanBeNull] public IEnumerator Show();
         [CanBeNull] public IEnumerator Hide();
     }
 }

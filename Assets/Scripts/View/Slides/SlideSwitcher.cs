@@ -5,9 +5,12 @@
     using System.Linq;
     using Shared.Extensions;
     using UnityEngine;
+    using View.Interfaces;
 
     public class SlideSwitcher : MonoBehaviour
     {
+        [SerializeField] private bool reverse = true;
+
         private int _slideIndex = -1;
         private List<SlideBase> _slides;
 
@@ -26,11 +29,8 @@
 
         private void Start()
         {
-            _slides = GetComponentsInChildren<SlideBase>(true).ToList();
-            _slides.Sort((x, y) => x.name.CompareStrings(y.name));
-            foreach (var slide in _slides)
-                slide.gameObject.SetActive(false);
-
+            InitSlides();
+            DisableSlides();
             SlideIndex = 0;
         }
 
@@ -38,6 +38,21 @@
         {
             if (Input.GetKeyDown(KeyCode.LeftArrow)) Prev();
             if (Input.GetKeyDown(KeyCode.RightArrow)) Next();
+        }
+
+        private void InitSlides()
+        {
+            _slides = GetComponentsInChildren<SlideBase>(true).ToList();
+            if (reverse)
+                _slides.Reverse();
+
+            _slides.ForEach(slide => slide.GetComponentsInChildren<ISlideInitable>().ForAll(x => x.Init()));
+        }
+
+        private void DisableSlides()
+        {
+            foreach (var slide in _slides)
+                slide.gameObject.SetActive(false);
         }
 
         private void ReRender(int prevInd, int curInd)

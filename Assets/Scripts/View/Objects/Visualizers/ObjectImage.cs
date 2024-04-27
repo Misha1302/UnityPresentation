@@ -24,6 +24,11 @@
 
         public override List<Component> GetNecessaryComponents() => new() { GetOrAddComponent<Image>() };
 
+        public override void PreShow()
+        {
+            Init();
+        }
+
         public override void Init()
         {
             SetImage();

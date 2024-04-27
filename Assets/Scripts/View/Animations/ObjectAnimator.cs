@@ -27,7 +27,7 @@
 
         public virtual IEnumerator Hide() => animationPlayMoment.IsNeedPlayInEnd() ? PlayAnimation(-1) : null;
 
-        public virtual IEnumerator Init() => animationPlayMoment.IsNeedPlayInStart() ? PlayAnimation(delay) : null;
+        public virtual IEnumerator Show() => animationPlayMoment.IsNeedPlayInStart() ? PlayAnimation(delay) : null;
 
         public List<Component> GetNecessaryComponents() => new() { GetComponent<Graphic>() };
 

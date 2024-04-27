@@ -12,6 +12,11 @@
 
         public override List<Component> GetNecessaryComponents() => new() { GetOrAddComponent<TextMeshProUGUI>() };
 
+        public override void PreShow()
+        {
+            Init();
+        }
+
         public override void Init()
         {
             SetText();

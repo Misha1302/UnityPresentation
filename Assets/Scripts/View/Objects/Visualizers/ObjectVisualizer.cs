@@ -7,7 +7,7 @@ namespace View.Objects.Visualizers
 
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ObjectVisualizerEditorValidator))]
-    public abstract class ObjectVisualizer : ExtendedMonoBehaviour, ISlideInitableHidable
+    public abstract class ObjectVisualizer : ExtendedMonoBehaviour, ISlideInitable, ISlideShowableHidable
     {
         [SerializeField] protected string key;
 
@@ -18,10 +18,16 @@ namespace View.Objects.Visualizers
 
         public abstract void Init();
 
+        public abstract List<Component> GetNecessaryComponents();
+
+        public virtual void Show()
+        {
+        }
+
         public virtual void Hide()
         {
         }
 
-        public abstract List<Component> GetNecessaryComponents();
+        public abstract void PreShow();
     }
 }

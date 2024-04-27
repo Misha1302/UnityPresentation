@@ -1,7 +1,9 @@
 ﻿namespace View.Objects.Visualizers
 {
+    using System;
     using System.Collections.Generic;
     using Logic.DataSystem;
+    using Shared.Coroutines;
     using Shared.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
@@ -10,9 +12,32 @@
 
     public class ObjectVideo : ObjectVisualizer
     {
+        [SerializeField] private bool autoPlay = true;
+        [SerializeField] private float delay;
+
+        private readonly CoroutineManager _coroutineManager = new();
+
+        private void OnDisable()
+        {
+            _coroutineManager.StopCors();
+        }
+
         public override void Init()
         {
             SetVideo();
+        }
+
+        public override void Show()
+        {
+            if (!autoPlay) return;
+
+            Action play = GetComponent<CustomVideoPlayer>().Play;
+            var coroutine = CoroutinesHelper.StartAfterCoroutine(play, delay);
+            _coroutineManager.StartCor(coroutine);
+        }
+
+        public override void PreShow()
+        {
         }
 
         public override List<Component> GetNecessaryComponents() => new()

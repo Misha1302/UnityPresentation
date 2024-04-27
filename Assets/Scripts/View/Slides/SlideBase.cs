@@ -40,9 +40,9 @@
             _coroutineManager.StopCors();
             gameObject.SetActive(true);
 
-            GetComponentsInChildren<ISlideInitableHidable>().ForAll(x => x.Init());
+            GetComponentsInChildren<ISlideShowableHidable>().ForAll(x => x.Show());
             GetComponentsInChildren<ISlideObjectAnimator>().ForAll(
-                x => _coroutineManager.StartCor(x.Init())
+                x => _coroutineManager.StartCor(x.Show())
             );
 
             SlideState = SlideState.Ready;
@@ -55,7 +55,7 @@
             gameObject.SetActive(true);
 
             _coroutineManager.StopCors();
-            GetComponentsInChildren<ISlideInitableHidable>().ForAll(x => x.Hide());
+            GetComponentsInChildren<ISlideShowableHidable>().ForAll(x => x.Hide());
             GetComponentsInChildren<ISlideObjectAnimator>().ForAll(x =>
                 _coroutineManager.StartCor(x.Hide())
             );

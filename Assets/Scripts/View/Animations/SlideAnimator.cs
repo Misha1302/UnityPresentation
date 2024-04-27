@@ -21,11 +21,11 @@
             recursive = animationType != AnimationType.DiagonalRectangleGrid;
         }
 
-        public override IEnumerator Init()
+        public override IEnumerator Show()
         {
             SetAlphas();
             HideVideos();
-            return InitAnimation(base.Init());
+            return InitAnimation(base.Show());
         }
 
         private IEnumerator InitAnimation(IEnumerator anim)
