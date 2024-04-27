@@ -5,6 +5,7 @@
         Invalid,
         Appearance,
         Vanishing,
-        Rotating
+        Rotating,
+        DiagonalRectangleGrid
     }
 }

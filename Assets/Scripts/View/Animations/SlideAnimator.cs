@@ -17,6 +17,8 @@
 
             if (animationPlayMoment.IsNeedPlayInStart()) includeAnimators = false;
             else if (animationPlayMoment.IsNeedPlayInEnd()) includeAnimators = true;
+
+            recursive = animationType != AnimationType.DiagonalRectangleGrid;
         }
 
         public override IEnumerator Init()

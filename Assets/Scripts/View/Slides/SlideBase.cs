@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using EasyTransition;
     using Shared.Coroutines;
     using Shared.Exceptions;
     using Shared.Extensions;
@@ -99,11 +100,13 @@
             {
                 var enumerable = GetComponentsToAnimate(go, includeAnimators);
                 foreach (var img in enumerable)
+                    // set recursively to false 'cause GetComponentsToAnimate returns all components on all levels
                     StartAnimation(img.gameObject, animationType, duration, repeat, false, includeAnimators);
             }
 
             var graphic = go.GetComponent<Graphic>();
-            if (graphic == null) return;
+            if (animationType.RequireGraphic() && graphic == null)
+                return;
 
             Action a = animationType switch
             {
@@ -115,10 +118,25 @@
                     _coroutineManager.StartCor(
                         Animations.Rotate(graphic, duration, Vector3.zero, Vector3.forward * 360f, repeat)
                     ),
+                AnimationType.DiagonalRectangleGrid => () =>
+                    _coroutineManager.StartCor(
+                        ActAndWait(() =>
+                                TransitionManager.Instance().Transition(
+                                    Resources.Load<TransitionSettings>("Transitions/DiagonalRectangleGrid"), 0
+                                ),
+                            duration
+                        )
+                    ),
                 _ => Thrower.Throw<ArgumentOutOfRangeException>
             };
 
             a();
+        }
+
+        private static IEnumerator ActAndWait(Action action, float duration)
+        {
+            action();
+            yield return new WaitForSeconds(duration);
         }
 
         private static IEnumerable<Graphic> GetComponentsToAnimate(GameObject go, bool includeAnimators)
