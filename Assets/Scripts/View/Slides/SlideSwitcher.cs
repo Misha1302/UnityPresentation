@@ -10,6 +10,7 @@
     public class SlideSwitcher : MonoBehaviour
     {
         [SerializeField] private bool reverse = true;
+        [SerializeField] private string startSlideName;
 
         private int _slideIndex = -1;
         private List<SlideBase> _slides;
@@ -31,7 +32,7 @@
         {
             InitSlides();
             DisableSlides();
-            SlideIndex = 0;
+            SlideIndex = _slides.FindIndex(x => x.name == startSlideName);
         }
 
         private void Update()
