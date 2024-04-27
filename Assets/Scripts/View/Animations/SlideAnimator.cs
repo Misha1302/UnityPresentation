@@ -24,7 +24,6 @@
         public override IEnumerator Show()
         {
             SetAlphas();
-            HideVideos();
             return InitAnimation(base.Show());
         }
 
@@ -37,7 +36,6 @@
 
         public override IEnumerator Hide()
         {
-            HideVideos();
             return base.Hide();
         }
 
@@ -48,17 +46,12 @@
                 .ToList();
         }
 
-        private void HideVideos()
-        {
-            GetVideoImages().ForEach(x => x.color = x.color.WithA(0));
-        }
-
         private void SetAlphas()
         {
             if (_standardAlphas == null)
             {
                 var components = GetComponentsInChildren<Graphic>();
-                _standardAlphas = components.ToDictionary(x => x, x => x.color.a);
+                _standardAlphas = components.ToDictionary(x => x, GetDefaultAlpha);
             }
             else
             {
@@ -66,5 +59,7 @@
                     pair.Key.color = pair.Key.color.WithA(pair.Value);
             }
         }
+
+        private static float GetDefaultAlpha(Graphic x) => x.color.a;
     }
 }

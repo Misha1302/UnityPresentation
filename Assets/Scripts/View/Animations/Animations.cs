@@ -10,7 +10,7 @@
     {
         public static IEnumerator Appearance(Graphic image, float duration, bool repeat)
         {
-            var startValue = image.color.a;
+            var startValue = 0;
             const float endValue = 1f;
 
             do

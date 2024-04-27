@@ -27,8 +27,15 @@
             SetVideo();
         }
 
+        public override void Hide()
+        {
+            SetAlpha(0);
+            base.Hide();
+        }
+
         public override void Show()
         {
+            SetAlpha(0);
             if (!autoPlay) return;
 
             Action play = GetComponent<CustomVideoPlayer>().Play;
@@ -36,8 +43,10 @@
             _coroutineManager.StartCor(coroutine);
         }
 
-        public override void PreShow()
+        private void SetAlpha(int a)
         {
+            var g = GetComponent<Graphic>();
+            g.color = g.color.WithA(a);
         }
 
         public override List<Component> GetNecessaryComponents() => new()

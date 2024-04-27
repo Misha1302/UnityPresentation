@@ -27,7 +27,5 @@ namespace View.Objects.Visualizers
         public virtual void Hide()
         {
         }
-
-        public abstract void PreShow();
     }
 }

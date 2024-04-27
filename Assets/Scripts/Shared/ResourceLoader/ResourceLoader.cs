@@ -43,7 +43,7 @@
 
             if (www.result == UnityWebRequest.Result.Success)
                 onSuccess(www);
-            else DataLogger.Log("www result was", www.result);
+            else DataLogger.Log("www result was", www.result, www.url);
         }
     }
 }

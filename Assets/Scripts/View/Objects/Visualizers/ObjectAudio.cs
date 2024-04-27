@@ -26,10 +26,6 @@
             GetOrAddComponent<AudioSource>().Stop();
         }
 
-        public override void PreShow()
-        {
-        }
-
         public override List<Component> GetNecessaryComponents() => new() { GetOrAddComponent<AudioSource>() };
 
         private void SetAudio()

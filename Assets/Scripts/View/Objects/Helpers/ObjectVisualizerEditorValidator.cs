@@ -10,24 +10,17 @@
     [DisallowMultipleComponent]
     public class ObjectVisualizerEditorValidator : MonoBehaviour
     {
-        private float _prevCallTime;
-
         public void TryValidate()
         {
-#if UNITY_EDITOR
-            const float delay = 0.02f;
-            if (Time.time - _prevCallTime < delay) return;
             if (Application.isPlaying) return;
 
             EditorApplication.delayCall += Validate;
-#endif
         }
 
         private void Validate()
         {
-            _prevCallTime = Time.time;
             RemoveAllComponents();
-            GetComponent<ObjectVisualizer>().PreShow();
+            GetComponent<ObjectVisualizer>().Init();
         }
 
         private void RemoveAllComponents()

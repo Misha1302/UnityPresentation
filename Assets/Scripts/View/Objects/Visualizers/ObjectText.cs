@@ -9,13 +9,10 @@
     {
         [SerializeField] private TextAlignmentOptions textAlignment = TextAlignmentOptions.Center;
         [SerializeField] private float fontSize = 36;
+        [SerializeField] private Color color = Color.white;
 
         public override List<Component> GetNecessaryComponents() => new() { GetOrAddComponent<TextMeshProUGUI>() };
 
-        public override void PreShow()
-        {
-            Init();
-        }
 
         public override void Init()
         {
@@ -31,6 +28,7 @@
             text.alignment = textAlignment;
             text.fontSize = fontSize;
             text.enableWordWrapping = false;
+            text.color = color;
         }
     }
 }
