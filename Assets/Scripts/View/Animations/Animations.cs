@@ -70,7 +70,7 @@
 
         private static void JumpFunction(Graphic graphic, float x, Vector3 endPos)
         {
-            const float xMaxValue = 4.828f;
+            const float xMaxValue = 4.222f;
 
             const float xCoefficient = 100f;
             const float yCoefficient = 100f;
@@ -81,8 +81,10 @@
 
             if (x <= 1.87f / xMaxValue)
                 y = -Mathf.Pow(x * xMaxValue, 2) + 5;
-            else if (x > 1.87f / xMaxValue)
-                y = -Mathf.Pow(x * xMaxValue - 3.0955f, 2) + 3f;
+            else if (x <= 3.506 / xMaxValue)
+                y = -Mathf.Pow(x * xMaxValue - 3.0955f + 0.519f, 2) * 3f + 3f;
+            else
+                y = -Mathf.Pow(x * xMaxValue - 3.8f, 2) * 4.5f + 0.8f;
 
             var offset = new Vector3(x * xCoefficient, y * yCoefficient, 0);
 

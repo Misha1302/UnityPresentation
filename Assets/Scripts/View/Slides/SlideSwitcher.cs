@@ -3,9 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Shared.Extensions;
     using UnityEngine;
-    using View.Interfaces;
 
     public class SlideSwitcher : MonoBehaviour
     {
@@ -46,9 +44,9 @@
             _slides = GetComponentsInChildren<SlideBase>(true).ToList();
             if (reverse)
                 _slides.Reverse();
-#if !UNITY_EDITOR
-            _slides.ForEach(slide => slide.GetComponentsInChildren<ISlideInitable>().ForAll(x => x.Init()));
-#endif
+
+            if (!Application.isEditor)
+                _slides.ForEach(slide => slide.Init());
         }
 
         private void DisableSlides()
@@ -68,6 +66,7 @@
             }
 
             var cur = _slides[curInd];
+            if (Application.isEditor) cur.Init();
             if (cur.SlideState != SlideState.Showing) cur.Show();
         }
 

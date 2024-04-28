@@ -151,5 +151,10 @@
 
             return enumerable;
         }
+
+        public void Init()
+        {
+            GetComponentsInChildren<ISlideInitable>().ForAll(x => x.Init());
+        }
     }
 }
