@@ -5,7 +5,6 @@
     using System.Linq;
     using Shared.Extensions;
     using UnityEngine.UI;
-    using UnityEngine.Video;
 
     public class SlideAnimator : ObjectAnimator
     {
@@ -32,18 +31,6 @@
             yield return anim;
             GetComponentsInChildren<ISlideAfterAnimationInitable>()
                 .ForAll(x => x.Init());
-        }
-
-        public override IEnumerator Hide()
-        {
-            return base.Hide();
-        }
-
-        private List<RawImage> GetVideoImages()
-        {
-            return GetComponentsInChildren<VideoPlayer>()
-                .Select(x => x.GetComponent<RawImage>())
-                .ToList();
         }
 
         private void SetAlphas()

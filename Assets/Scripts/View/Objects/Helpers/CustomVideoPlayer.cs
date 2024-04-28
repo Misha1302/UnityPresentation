@@ -22,7 +22,7 @@
             _videoPlayer.Value.waitForFirstFrame = true;
             _videoPlayer.Value.playOnAwake = false;
         }
-    
+
         public void Init(string url, RenderTexture renderTexture)
         {
             _videoPlayer.Value.url = url;

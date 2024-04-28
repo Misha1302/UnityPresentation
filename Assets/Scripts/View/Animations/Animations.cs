@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections;
-    using Shared.Debug;
     using Shared.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
@@ -70,22 +69,25 @@
 
         private static void JumpFunction(Graphic graphic, float x, Vector3 endPos)
         {
-            const float xMaxValue = 4.222f;
+            // see graph to understand this code:
+            // https://www.desmos.com/Calculator/gsqpheznmy?lang=ru
 
-            const float xCoefficient = 100f;
-            const float yCoefficient = 100f;
+            const float xMaxValue = 4.222f; // maximum value that x takes on the chart
+            const float xCoefficient = 100f; // 1 x = xCoefficient meters in unity
+            const float yCoefficient = 100f; // 1 y = yCoefficient meters in unity
 
+            // move the position by 1 x to the left, as the object will move 1 * xCoefficient to the right
             endPos = endPos.WithX(endPos.x - xCoefficient);
 
-            float y = 0;
+            // implementation of the piecewise function
+            var y = x switch
+            {
+                <= 1.87f / xMaxValue => -Mathf.Pow(x * xMaxValue, 2) + 5,
+                <= 3.506f / xMaxValue => -Mathf.Pow(x * xMaxValue - 2.5765f, 2) * 3f + 3f,
+                _ => -Mathf.Pow(x * xMaxValue - 3.8f, 2) * 4.5f + 0.8f
+            };
 
-            if (x <= 1.87f / xMaxValue)
-                y = -Mathf.Pow(x * xMaxValue, 2) + 5;
-            else if (x <= 3.506 / xMaxValue)
-                y = -Mathf.Pow(x * xMaxValue - 3.0955f + 0.519f, 2) * 3f + 3f;
-            else
-                y = -Mathf.Pow(x * xMaxValue - 3.8f, 2) * 4.5f + 0.8f;
-
+            // convert X to a horizontal deviation, and the resulting Y to a vertical deflection
             var offset = new Vector3(x * xCoefficient, y * yCoefficient, 0);
 
             graphic.rectTransform.position = endPos + offset;
