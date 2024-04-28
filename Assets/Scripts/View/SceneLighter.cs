@@ -1,6 +1,7 @@
 namespace View
 {
     using Shared.Extensions;
+    using UnityEditor.SceneManagement;
     using UnityEngine;
     using UnityEngine.UI;
     using UnityEngine.Video;

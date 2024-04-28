@@ -118,6 +118,8 @@
                     _coroutineManager.StartCor(
                         Animations.Rotate(graphic, duration, Vector3.zero, Vector3.forward * 360f, repeat)
                     ),
+                AnimationType.JumpingOut => () =>
+                    _coroutineManager.StartCor(Animations.JumpingOut(graphic, duration)),
                 AnimationType.DiagonalRectangleGrid => () =>
                     _coroutineManager.StartCor(
                         ActAndWait(() =>

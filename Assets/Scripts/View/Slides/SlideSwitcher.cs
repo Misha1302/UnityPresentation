@@ -46,8 +46,9 @@
             _slides = GetComponentsInChildren<SlideBase>(true).ToList();
             if (reverse)
                 _slides.Reverse();
-
+#if !UNITY_EDITOR
             _slides.ForEach(slide => slide.GetComponentsInChildren<ISlideInitable>().ForAll(x => x.Init()));
+#endif
         }
 
         private void DisableSlides()

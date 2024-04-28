@@ -6,6 +6,7 @@
         Appearance,
         Vanishing,
         Rotating,
-        DiagonalRectangleGrid
+        DiagonalRectangleGrid,
+        JumpingOut
     }
 }

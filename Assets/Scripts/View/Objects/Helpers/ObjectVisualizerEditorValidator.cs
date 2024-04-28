@@ -12,7 +12,8 @@
     {
         public void TryValidate()
         {
-            if (Application.isPlaying) return;
+            if (Application.isPlaying)
+                return;
 
 #if UNITY_EDITOR
             EditorApplication.delayCall += Validate;
@@ -22,7 +23,8 @@
         private void Validate()
         {
             RemoveAllComponents();
-            GetComponent<ObjectVisualizer>().Init();
+            if (!Application.isPlaying)
+                GetComponent<ObjectVisualizer>().Init();
         }
 
         private void RemoveAllComponents()

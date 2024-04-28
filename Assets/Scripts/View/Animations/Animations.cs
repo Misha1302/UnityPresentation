@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections;
+    using Shared.Debug;
     using Shared.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
@@ -58,6 +59,34 @@
                 yield return null;
                 t += Time.deltaTime;
             }
+        }
+
+        public static IEnumerator JumpingOut(Graphic graphic, float duration)
+        {
+            var endPos = graphic.rectTransform.position;
+
+            yield return LerpCoroutine(duration, x => JumpFunction(graphic, x, endPos));
+        }
+
+        private static void JumpFunction(Graphic graphic, float x, Vector3 endPos)
+        {
+            const float xMaxValue = 4.828f;
+
+            const float xCoefficient = 100f;
+            const float yCoefficient = 100f;
+
+            endPos = endPos.WithX(endPos.x - xCoefficient);
+
+            float y = 0;
+
+            if (x <= 1.87f / xMaxValue)
+                y = -Mathf.Pow(x * xMaxValue, 2) + 5;
+            else if (x > 1.87f / xMaxValue)
+                y = -Mathf.Pow(x * xMaxValue - 3.0955f, 2) + 3f;
+
+            var offset = new Vector3(x * xCoefficient, y * yCoefficient, 0);
+
+            graphic.rectTransform.position = endPos + offset;
         }
     }
 }
