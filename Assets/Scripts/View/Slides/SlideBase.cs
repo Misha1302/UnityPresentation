@@ -13,12 +13,18 @@
     using View.Animations;
     using View.Interfaces;
 
+    [RequireComponent(typeof(SlideObjectsController))]
     public abstract class SlideBase : MonoBehaviour
     {
         private const int FinishingAnimationsCount = 1;
 
+
+        [SerializeField] private Transform[] saveToNextSlide;
+
+
         private readonly CoroutineManager _coroutineManager = new();
 
+        public Transform[] SaveToNextSlide => saveToNextSlide;
         public SlideState SlideState { get; private set; }
 
         private void OnEnable()
@@ -108,7 +114,12 @@
             if (animationType.RequireGraphic() && graphic == null)
                 return;
 
-            Action a = animationType switch
+            AnimationAction(animationType, duration, repeat, graphic)();
+        }
+
+        private Action AnimationAction(AnimationType animationType, float duration, bool repeat, Graphic graphic)
+        {
+            return animationType switch
             {
                 AnimationType.Vanishing => () =>
                     _coroutineManager.StartCor(Animations.Vanishing(graphic, duration, repeat)),
@@ -120,6 +131,8 @@
                     ),
                 AnimationType.JumpingOut => () =>
                     _coroutineManager.StartCor(Animations.JumpingOut(graphic, duration)),
+                AnimationType.FlyOutFromDown => () =>
+                    _coroutineManager.StartCor(Animations.FlyOutFromDown(graphic, duration)),
                 AnimationType.DiagonalRectangleGrid => () =>
                     _coroutineManager.StartCor(
                         ActAndWait(() =>
@@ -131,8 +144,6 @@
                     ),
                 _ => Thrower.Throw<ArgumentOutOfRangeException>
             };
-
-            a();
         }
 
         private static IEnumerator ActAndWait(Action action, float duration)

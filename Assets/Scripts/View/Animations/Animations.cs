@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections;
+    using Shared.Debug;
     using Shared.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
@@ -58,6 +59,8 @@
                 yield return null;
                 t += Time.deltaTime;
             }
+
+            action(1f);
         }
 
         public static IEnumerator JumpingOut(Graphic graphic, float duration)
@@ -91,6 +94,15 @@
             var offset = new Vector3(x * xCoefficient, y * yCoefficient, 0);
 
             graphic.rectTransform.position = endPos + offset;
+        }
+
+        public static IEnumerator FlyOutFromDown(Graphic graphic, float duration)
+        {
+            var pos = graphic.rectTransform.localPosition;
+
+            var endPos = pos.WithY(pos.y + 600);
+
+            yield return LerpCoroutine(duration, t => graphic.rectTransform.localPosition = Vector3.Lerp(pos, endPos, t));
         }
     }
 }

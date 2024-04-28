@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Shared.Extensions;
     using UnityEngine;
 
     public class SlideSwitcher : MonoBehaviour
@@ -57,27 +58,42 @@
 
         private void ReRender(int prevInd, int curInd)
         {
-            HideImmediatelyAllSlides();
+            HideImmediatelyAllSlides(prevInd);
+
+            var cur = _slides[curInd];
+            ShowSlide(cur);
 
             if (prevInd >= 0)
             {
                 var prev = _slides[prevInd];
-                if (prev.SlideState != SlideState.Hiding) prev.Hide();
-            }
 
-            var cur = _slides[curInd];
+                CarryObjectsToNextSlideIfNeed(prevInd, curInd, prev, cur);
+                prev.HideImmediately();
+                HideSlide(prev);
+            }
+        }
+
+        private static void HideSlide(SlideBase prev)
+        {
+            if (prev.SlideState != SlideState.Hiding)
+                prev.Hide();
+        }
+
+        private static void CarryObjectsToNextSlideIfNeed(int prevInd, int curInd, SlideBase prev, Component cur)
+        {
+            if (curInd > prevInd)
+                prev.SaveToNextSlide.ForAll(x => x.SetParent(cur.transform));
+        }
+
+        private static void ShowSlide(SlideBase cur)
+        {
             if (Application.isEditor) cur.Init();
             if (cur.SlideState != SlideState.Showing) cur.Show();
         }
 
         private void HideImmediatelyAllSlides(params int[] except)
         {
-            for (var index = 0; index < _slides.Count; index++)
-            {
-                if (except.Contains(index)) continue;
-
-                _slides[index].HideImmediately();
-            }
+            _slides.Except(except).ForAll(x => x.HideImmediately());
         }
 
         private void Next() => SlideIndex++;

@@ -7,6 +7,7 @@
         Vanishing,
         Rotating,
         DiagonalRectangleGrid,
-        JumpingOut
+        JumpingOut,
+        FlyOutFromDown
     }
 }

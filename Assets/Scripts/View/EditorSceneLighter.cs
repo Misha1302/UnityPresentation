@@ -6,7 +6,7 @@ namespace View
     using UnityEngine.Video;
     using View.Interfaces;
 
-    public class SceneLighter : MonoBehaviour
+    public class EditorSceneLighter : MonoBehaviour
     {
         [SerializeField] private bool changeMeToLightScene;
         [SerializeField] private bool changeMeToInitAll;
