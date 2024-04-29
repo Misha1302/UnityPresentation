@@ -133,6 +133,8 @@
                     _coroutineManager.StartCor(Animations.JumpingOut(graphic, duration)),
                 AnimationType.FlyOutFromDown => () =>
                     _coroutineManager.StartCor(Animations.FlyOutFromDown(graphic, duration)),
+                AnimationType.Pulsation => () =>
+                    _coroutineManager.StartCor(Animations.Pulsation(graphic, duration, repeat)),
                 AnimationType.DiagonalRectangleGrid => () =>
                     _coroutineManager.StartCor(
                         ActAndWait(() =>

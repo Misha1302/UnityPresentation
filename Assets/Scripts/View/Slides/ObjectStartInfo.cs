@@ -11,7 +11,10 @@
         public Vector3 defaultRotation;
         public Vector3 defaultScale;
 
-        public ObjectStartInfo(Color defaultColor, Vector3 defaultPosition, Vector3 defaultRotation, Vector3 defaultScale)
+        public ObjectStartInfo(Color defaultColor,
+            Vector3 defaultPosition,
+            Vector3 defaultRotation,
+            Vector3 defaultScale)
         {
             this.defaultColor = defaultColor;
             this.defaultPosition = defaultPosition;

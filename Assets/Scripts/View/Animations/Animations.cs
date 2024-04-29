@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections;
-    using Shared.Debug;
     using Shared.Extensions;
     using UnityEngine;
     using UnityEngine.UI;
@@ -76,7 +75,7 @@
             // https://www.desmos.com/Calculator/gsqpheznmy?lang=ru
 
             const float xMaxValue = 4.222f; // maximum value that x takes on the chart
-            const float xCoefficient = 100f; // 1 x = xCoefficient meters in unity
+            const float xCoefficient = 200f; // 1 x = xCoefficient meters in unity
             const float yCoefficient = 100f; // 1 y = yCoefficient meters in unity
 
             // move the position by 1 x to the left, as the object will move 1 * xCoefficient to the right
@@ -102,7 +101,38 @@
 
             var endPos = pos.WithY(pos.y + 600);
 
-            yield return LerpCoroutine(duration, t => graphic.rectTransform.localPosition = Vector3.Lerp(pos, endPos, t));
+            yield return LerpCoroutine(duration,
+                t => graphic.rectTransform.localPosition = Vector3.Lerp(pos, endPos, t));
+        }
+
+        public static IEnumerator Pulsation(Graphic graphic, float duration, bool repeat)
+        {
+            var startSize = graphic.rectTransform.sizeDelta;
+            var endSize = startSize * 1.2f;
+
+            var startColor = Color.white;
+            var endColor = new Color(0.5882353F, 0.5882353F, 0.5882353F);
+
+            do
+            {
+                yield return LerpCoroutine(duration, t =>
+                {
+                    SetAlpha(t);
+                    SetSize(t);
+                });
+                yield return LerpCoroutine(duration, t =>
+                {
+                    SetAlpha(1 - t);
+                    SetSize(1 - t);
+                });
+                // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
+            } while (repeat);
+
+            yield break;
+
+
+            void SetSize(float t) => graphic.rectTransform.sizeDelta = Vector3.Lerp(startSize, endSize, t);
+            void SetAlpha(float t) => graphic.color = Color.Lerp(startColor, endColor, t * 4f);
         }
     }
 }
