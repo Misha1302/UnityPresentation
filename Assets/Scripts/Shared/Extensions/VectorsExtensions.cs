@@ -18,7 +18,7 @@
 
         public static Vector3 WithZ(this Vector3 vec, float z)
         {
-            vec.x = z;
+            vec.z = z;
             return vec;
         }
     }

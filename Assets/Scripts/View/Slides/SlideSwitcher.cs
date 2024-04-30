@@ -30,14 +30,21 @@
         private void Start()
         {
             InitSlides();
-            DisableSlides();
-            SlideIndex = _slides.FindIndex(x => x.name == startSlideName);
+            SetSlide();
         }
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.LeftArrow)) Prev();
             if (Input.GetKeyDown(KeyCode.RightArrow)) Next();
+        }
+
+        private void SetSlide()
+        {
+            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+            if (Application.isEditor)
+                SlideIndex = _slides.FindLastIndex(x => x.gameObject.activeSelf);
+            else SlideIndex = _slides.FindIndex(x => x.name == startSlideName);
         }
 
         private void InitSlides()
@@ -48,12 +55,6 @@
 
             if (!Application.isEditor)
                 _slides.ForEach(slide => slide.Init());
-        }
-
-        private void DisableSlides()
-        {
-            foreach (var slide in _slides)
-                slide.gameObject.SetActive(false);
         }
 
         private void ReRender(int prevInd, int curInd)

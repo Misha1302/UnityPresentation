@@ -9,6 +9,7 @@
         DiagonalRectangleGrid,
         JumpingOut,
         FlyOutFromDown,
-        Pulsation
+        Pulsation,
+        Swing
     }
 }

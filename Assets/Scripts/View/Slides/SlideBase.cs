@@ -135,6 +135,13 @@
                     _coroutineManager.StartCor(Animations.FlyOutFromDown(graphic, duration)),
                 AnimationType.Pulsation => () =>
                     _coroutineManager.StartCor(Animations.Pulsation(graphic, duration, repeat)),
+                AnimationType.Swing => () =>
+                {
+                    var rot = graphic.rectTransform.rotation.eulerAngles;
+                    _coroutineManager.StartCor(
+                        Animations.Rotate(graphic, duration, rot, rot.WithZ(rot.z + 20f), repeat)
+                    );
+                },
                 AnimationType.DiagonalRectangleGrid => () =>
                     _coroutineManager.StartCor(
                         ActAndWait(() =>
