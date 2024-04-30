@@ -41,7 +41,7 @@
 
         private IEnumerator PlayAnimation(float animationDelay)
         {
-            var slide = GetComponentInParent<SlideBase>();
+            var slide = GetComponentInParent<SlideAnimationsManager>();
             return slide.StartAnimation(gameObject, animationType, animationDelay, duration,
                 animationPlayMoment.IsNeedRepeating(), recursive, includeAnimators);
         }
