@@ -61,17 +61,27 @@
         {
             HideImmediatelyAllSlides(prevInd);
 
+            HandleCurrentSlide(curInd);
+            HandlePrevSlide(prevInd, curInd);
+        }
+
+        private void HandlePrevSlide(int prevInd, int curInd)
+        {
+            if (prevInd < 0) return;
+
             var cur = _slides[curInd];
-            ShowSlide(cur);
+            var prev = _slides[prevInd];
 
-            if (prevInd >= 0)
-            {
-                var prev = _slides[prevInd];
+            if (curInd > prevInd)
+                CarryObjectsToNextSlide(prev, cur);
 
-                CarryObjectsToNextSlideIfNeed(prevInd, curInd, prev, cur);
-                prev.HideImmediately();
-                HideSlide(prev);
-            }
+            prev.HideImmediately();
+            HideSlide(prev);
+        }
+
+        private void HandleCurrentSlide(int curInd)
+        {
+            ShowSlide(_slides[curInd]);
         }
 
         private static void HideSlide(SlideBase prev)
@@ -80,10 +90,9 @@
                 prev.Hide();
         }
 
-        private static void CarryObjectsToNextSlideIfNeed(int prevInd, int curInd, SlideBase prev, Component cur)
+        private static void CarryObjectsToNextSlide(SlideBase prev, Component cur)
         {
-            if (curInd > prevInd)
-                prev.SaveToNextSlide.ForAll(x => x.SetParent(cur.transform));
+            prev.SaveToNextSlide.ForAll(x => x.SetParent(cur.transform));
         }
 
         private static void ShowSlide(SlideBase cur)
